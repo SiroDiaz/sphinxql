@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+  - 'node'
+  - '10'
+  - '8.9'
+
+env:
+  - workerCount=3 timeout=600000
+
+branches:
+  only:
+  - master
+  - develop
+
+brefore_script:
+  - npm install
+
+script: npm run test
+
+cache:
+  directories:
+    - node_modules
