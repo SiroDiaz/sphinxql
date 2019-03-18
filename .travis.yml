@@ -12,7 +12,27 @@ branches:
   - master
   - develop
 
-brefore_script:
+env:
+  - SEARCH_BUILD=SPHINX2 EXCLUDE_GROUP="--exclude-group=Manticore"
+  - SEARCH_BUILD=SPHINX3 EXCLUDE_GROUP="--exclude-group=Manticore"
+  - SEARCH_BUILD=MANTICORE
+
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: SEARCH_BUILD=SPHINX3 EXCLUDE_GROUP="--exclude-group=Manticore"
+
+before_install:
+  - mkdir $HOME/search
+  - pushd $HOME/search
+  - $TRAVIS_BUILD_DIR/tests/install.sh
+  - popd
+
+before_script:
+  - composer dump-autoload
+  - cd tests
+  - $TRAVIS_BUILD_DIR/tests/run.sh
   - npm install
 
 script: npm run test
