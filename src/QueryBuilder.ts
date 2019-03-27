@@ -1,9 +1,26 @@
 import { QueryType } from './QueryType';
+import ClientInterface from './ClientInterface';
+import SelectStatement from './Statements/SelectStatement';
 
 export default class QueryBuilder {
-  type: QueryType;
+  protected type: QueryType;
+  protected connection: ClientInterface;
 
-  constructor(type: QueryType) {
-    this.type = type;
+  constructor(connection: ClientInterface) {
+    this.connection = connection;
   }
+
+  public query(q: string, values?: Array<any>) : Promise<any> {
+    if (values !== undefined) {
+      return this.connection.execute(q, values);
+    }
+
+    return this.connection.query(q);
+  }
+
+  public select(fields: Array<string> | string): SelectStatement {
+    return new SelectStatement(this.connection, fields);
+  }
+
+
 }

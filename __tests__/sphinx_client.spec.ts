@@ -1,8 +1,7 @@
-// import SphinxQL from '../src/SphinxQL';
 import SphinxClient from '../src/SphinxClient';
 
-describe('greeter function', () => {
-  // Read more about fake timers: http://facebook.github.io/jest/docs/en/timer-mocks.html#content
+describe('Test Sphinx/Manticore client connector', () => {
+
   jest.useFakeTimers();
 
   const params = {
@@ -13,12 +12,11 @@ describe('greeter function', () => {
   const incorrectParams = {
     host: '127.0.0.1',
     port: 6666,
-  }
+  };
 
   it('it creates and stablish a Sphinx/Manticore connection successfully', (done) => {
-    const client = SphinxClient.getInstance(params);
+    const client = new SphinxClient(params);
     
-    expect(client).toBeInstanceOf(SphinxClient);
     client
       .ping()
       .then(() => {
@@ -29,9 +27,8 @@ describe('greeter function', () => {
   });
 
   it('tries to create and stablish a Sphinx/Manticore connection but get errors', (done) => {
-    SphinxClient.set(incorrectParams);
-    const client = SphinxClient.getInstance(incorrectParams);
-    expect(client).toBeInstanceOf(SphinxClient);
+    const client = new SphinxClient(incorrectParams);
+    
     client
       .ping()
       .then(() => {})
@@ -42,10 +39,8 @@ describe('greeter function', () => {
   });
 
   it('expects that interface method are good implemented and accessible from the client instance', () => {
-    SphinxClient.set(params);
-    const client = SphinxClient.getInstance(params);
+    const client = new SphinxClient(params);
     
-    expect(client).toBeInstanceOf(SphinxClient);
     expect(typeof client.query).toBe('function');
     expect(typeof client.execute).toBe('function');
     expect(typeof client.ping).toBe('function');
