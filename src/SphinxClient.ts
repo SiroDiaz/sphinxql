@@ -6,7 +6,7 @@ import ClientBase from './ClientBase';
  * client. It uses the same protocol that MySQL client.
  * 
  * Example usage:
- * const connection = SphinxConnection.getInstance(options)
+ * const connection = new SphinxClient(options);
  */
 export default class SphinxClient extends ClientBase {
   public constructor(options: object) {

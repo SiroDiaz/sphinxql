@@ -1,11 +1,11 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
 export default class WhereStatement extends StatementBuilderBase {
-  protected columnExpr;
-  protected operator;
+  protected columnExpr: string;
+  protected operator: string;
   protected value;
 
-  constructor(columnExpr: any, operator: any, value: any) {
+  constructor(columnExpr: string, operator: string, value: any) {
     super();
     this.columnExpr = columnExpr;
     this.operator = operator;
@@ -13,6 +13,15 @@ export default class WhereStatement extends StatementBuilderBase {
   }
 
   public build(): String {
-    return '';
+    let expression : string = this.columnExpr;
+    if (this.operator.includes('IN')) {
+      expression += ` ${this.operator} (`;
+    } else if (this.operator === 'BETWEEN') {
+      expression += ` ${this.operator} ${this.value[0]} AND ${this.value[1]}`;
+    } else {
+      expression += ` ${this.operator} ${this.value}`;
+    }
+
+    return expression;
   }
 }

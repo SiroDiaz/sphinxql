@@ -4,12 +4,10 @@ import SphinxClient from './SphinxClient';
 import SphinxClientPool from './SphinxClientPool';
 
 export default class Connection {
-  protected queryBuilder: QueryBuilder;
   protected connection: ClientInterface;
 
   public constructor(connection: ClientInterface) {
     this.connection = connection;
-    this.queryBuilder = new QueryBuilder(connection);
   }
 
   /**
@@ -24,7 +22,7 @@ export default class Connection {
    * the query.
    */
   public getQueryBuilder() : QueryBuilder {
-    return this.queryBuilder;
+    return new QueryBuilder(this.connection);
   }
   
   /**

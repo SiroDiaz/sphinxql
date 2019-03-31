@@ -1,7 +1,7 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
 export default class SelectExprStatement extends StatementBuilderBase {
-  protected fieldsExpr;
+  protected fieldsExpr: string[];
 
   constructor(...fields: string[]) {
     super();
@@ -9,7 +9,7 @@ export default class SelectExprStatement extends StatementBuilderBase {
   }
 
   public build(): String {
-    return this.fieldsExpr.join(', ');
+    return this.fieldsExpr.length ? this.fieldsExpr.join(', ') : '*';
   }
 
 }

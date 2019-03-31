@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-boilerplate",
+  "name": "node-sphinxql",
   "version": "0.0.1",
-  "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
+  "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
   "engines": {
     "node": ">= 10.13 <11"
   },
@@ -29,7 +29,6 @@
   "author": "Siro Diaz <sirodiaz93@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
     "tslib": "~1.9.3"
   }
