@@ -37,7 +37,8 @@ const connection = sphinxql.createConnection({
 connection.getQueryBuilder()
   .select('*')
   .from('book')
-  .whereMatch('title', 'harry potter')
+  .match('title', 'harry potter')
+  .where('created_at', '<',  Expression.raw('YEAR()'))
   .limit(10)
   .execute()
   .then((result, fields) => {

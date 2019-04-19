@@ -1,8 +1,9 @@
 import FromExprStatement from './select/FromExprStatement';
+import LimitExprStatement from './select/LimitExprStatement';
 import SelectExprStatement from './select/SelectExprStatement';
 import MatchExprStatement from './select/MatchStatement';
 import ClientInterface from '../ClientInterface';
-import GroupByStatement from './select/GroupByStatement';
+import GroupByExprStatement from './select/GroupByExprStatement';
 import WhereStatement from './select/WhereStatement';
 
 /**
@@ -24,7 +25,8 @@ export default class SelectStatement {
   protected fromIndexes: FromExprStatement;
   protected matchStatement: MatchExprStatement;
   protected whereConditions: WhereStatement[];
-  protected groupBy: GroupByStatement[];
+  protected groupByExpr: GroupByExprStatement[];
+  protected limitExpr: LimitExprStatement;
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
     this.connection = connection;
@@ -80,7 +82,22 @@ export default class SelectStatement {
 
   }
 
-  public generate() : String {
+  public groupBy(column: string, order?: string) {
+    console.log(order);
+    const expression = new GroupByExprStatement(column, order);
+
+    this.groupByExpr = [...this.groupByExpr, expression];
+
+    return this;
+  }
+
+  public limit(offset: number = 0, size: number = 5) {
+    this.limitExpr = new LimitExprStatement(offset, size);
+
+    return this;
+  }
+
+  public generate() : string {
     let statement = 'SELECT ';
     statement += this.select.build();
     statement += ' FROM ';
@@ -88,6 +105,16 @@ export default class SelectStatement {
 
     if (this.whereConditions !== undefined && this.whereConditions.length) {
 
+    }
+
+    if (this.groupByExpr !== undefined) {
+      statement += ' GROUP BY ';
+      statement += this.groupByExpr.map(group => group.build());
+      console.log(statement);
+    }
+
+    if (this.limitExpr !== undefined) {
+      statement += ` LIMIT ${this.limitExpr.build()}`;
     }
 
     return statement;

@@ -30,6 +30,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "mysql2": "^1.6.5",
+    "sqlstring": "^2.3.1",
     "tslib": "~1.9.3"
   }
 }
