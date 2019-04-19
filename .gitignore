@@ -27,3 +27,7 @@ build/
 
 # Misc
 .DS_Store
+
+# Manticore and Sphinx files
+__tests__/searchd.pid
+__tests__/data/rt.lock

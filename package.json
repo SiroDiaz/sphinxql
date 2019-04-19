@@ -3,19 +3,19 @@
   "version": "0.0.1",
   "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
   "engines": {
-    "node": ">= 10.13 <11"
+    "node": ">= 10.13"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.12",
-    "@types/node": "^10.14.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.5",
     "jest": "^24.5.0",
-    "prettier": "1.15.3",
+    "prettier": "1.17.0",
     "rimraf": "^2.6.3",
-    "ts-jest": "~23.10.5",
-    "tslint": "~5.12.0",
-    "tslint-config-prettier": "1.17.0",
-    "tslint-microsoft-contrib": "~6.0.0",
-    "tsutils": "~3.7.0",
+    "ts-jest": "~24.0.2",
+    "tslint": "~5.16.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-microsoft-contrib": "~6.1.1",
+    "tsutils": "~3.10.0",
     "typescript": "^3.2.2"
   },
   "scripts": {
@@ -27,7 +27,7 @@
     "test:watch": "jest --watch"
   },
   "author": "Siro Diaz <sirodiaz93@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "dependencies": {
     "mysql2": "^1.6.5",
     "sqlstring": "^2.3.1",
