@@ -31,3 +31,6 @@ build/
 # Manticore and Sphinx files
 __tests__/searchd.pid
 __tests__/data/rt.lock
+__tests__/data/rt.kill
+__tests__/data/rt.meta
+__tests__/data/rt.ram

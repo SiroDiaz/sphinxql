@@ -16,11 +16,6 @@ export default class FromExprStatement extends StatementBuilderBase {
     });
   }
 
-  /*
-  protected isValidIndex(index: any) : boolean {
-    return typeof index !== 'string' && !(index instanceof SelectStatement);
-  }
-  */
   protected static generateFromIndexExpressions(index: string | SelectStatement): string {
     if (index instanceof SelectStatement) {
       return `(${index.generate()})`;
