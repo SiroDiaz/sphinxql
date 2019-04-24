@@ -1,6 +1,6 @@
 import GroupByExprStatement from '../../../src/Statements/select/GroupByExprStatement';
 
-describe('Tests for SELECT fields generator', () => {
+describe('Tests for GROUP BY expressions', () => {
 
   it('Generates an empty group by expression', () => {
     const generator = new GroupByExprStatement([]);

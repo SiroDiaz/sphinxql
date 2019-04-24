@@ -8,13 +8,13 @@ describe('Tests for ORDER BY fields generator', () => {
     }).toThrow();
   });
 
-  it('generates a GROUP BY expression that uses DESC order as default', () => {
+  it('generates a ORDER BY expression that uses DESC order as default', () => {
     const generator = new OrderByExprStatement('country');
 
     expect(generator.build()).toBe(`country DESC`);
   });
 
-  it('generates a simple GROUP BY expression using an ASC order', () => {
+  it('generates a simple ORDER BY expression using an ASC order', () => {
     const generator = new OrderByExprStatement('group', 'ASC');
 
     expect(generator.build()).toBe(`group ASC`);
