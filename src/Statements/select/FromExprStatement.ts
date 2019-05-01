@@ -5,11 +5,10 @@ import StatementBuilderBase from '../StatementBuilderBase';
  * const conn.getQueryBuilder()
  * fromIndexes('books', conn.getQueryBuilder().select('').fromIndexes())
  */
-export default class FromExprStatement extends StatementBuilderBase {
+export default class FromExprStatement implements StatementBuilderBase {
   protected indexes: any[];
 
   public constructor(...indexes: (string | SelectStatement)[]) {
-    super();
     this.indexes = [];
     indexes.forEach((index: string | SelectStatement) => {
       this.indexes = [...this.indexes, index];

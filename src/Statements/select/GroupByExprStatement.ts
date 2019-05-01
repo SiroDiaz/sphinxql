@@ -1,10 +1,9 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
-export default class GroupByExprStatement extends StatementBuilderBase {
+export default class GroupByExprStatement implements StatementBuilderBase {
   protected columnExprs: string[];
   
   constructor(columnExprs: string[]) {
-    super();
     this.columnExprs = columnExprs;
   }
 

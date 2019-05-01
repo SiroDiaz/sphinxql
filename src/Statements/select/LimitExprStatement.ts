@@ -1,11 +1,10 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
-export default class LimitExprStatement extends StatementBuilderBase {
+export default class LimitExprStatement implements StatementBuilderBase {
   private size: number;
   private offset: number;
 
   constructor(offset: number = 0, size: number = 5) {
-    super();
     this.setOffset(offset);
     this.setSize(size);
   }

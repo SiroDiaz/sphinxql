@@ -1,10 +1,9 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
-export default class SelectExprStatement extends StatementBuilderBase {
+export default class SelectExprStatement implements StatementBuilderBase {
   protected fieldsExpr: string[];
 
   constructor(...fields: string[]) {
-    super();
     this.fieldsExpr = fields;
   }
 

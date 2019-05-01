@@ -1,7 +1,12 @@
 import StatementBuilderBase from '../StatementBuilderBase';
 
-export default class MatchStatement extends StatementBuilderBase {
+export default class MatchStatement implements StatementBuilderBase {
+  protected fullTextQuery: string;
+
+  constructor()
+
   build(): String {
-    return "";
+    let expression: string = '';
+    return this.fullTextQuery;
   }
 }

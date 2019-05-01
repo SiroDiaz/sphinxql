@@ -54,7 +54,7 @@ describe('Tests for SELECT fields generator', () => {
     expect(generator.build()).toBe(`tags NOT IN ('clothes', 'shoes', 'complements')`);
   });
 
-  it('expects a well formed BETWEEN IN statement', () => {
+  it('expects a well formed BETWEEN statement', () => {
     // const qb = connection.getQueryBuilder();
     let generator = new WhereStatement('year', 'BETWEEN', [2015, 2019]);
 

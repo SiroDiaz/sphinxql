@@ -1,4 +1,5 @@
 import FromExprStatement from './select/FromExprStatement';
+import HavingExprStatement from './select/HavingExprStatement';
 import LimitExprStatement from './select/LimitExprStatement';
 import SelectExprStatement from './select/SelectExprStatement';
 import MatchExprStatement from './select/MatchStatement';
@@ -26,6 +27,7 @@ export default class SelectStatement {
   protected matchStatement: MatchExprStatement;
   protected whereConditions: WhereStatement[];
   protected groupByExpr: GroupByExprStatement[];
+  protected havingExpr: HavingExprStatement;
   protected limitExpr: LimitExprStatement;
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
@@ -82,9 +84,9 @@ export default class SelectStatement {
 
   }
 
-  public groupBy(column: string, order?: string) {
-    console.log(order);
-    const expression = new GroupByExprStatement(column, order);
+  public groupBy(columns: string[]) {
+    // console.log(order);
+    const expression = new GroupByExprStatement(columns);
 
     this.groupByExpr = [...this.groupByExpr, expression];
 
@@ -110,7 +112,7 @@ export default class SelectStatement {
     if (this.groupByExpr !== undefined) {
       statement += ' GROUP BY ';
       statement += this.groupByExpr.map(group => group.build());
-      console.log(statement);
+      // console.log(statement);
     }
 
     if (this.limitExpr !== undefined) {

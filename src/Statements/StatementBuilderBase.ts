@@ -1,8 +1,8 @@
-export default abstract class StatementBuilderBase {
+export default interface StatementBuilderBase {
   /**
    * Builds the statement and return it as a string.
    * Each statement has it own implementation to generate a valid
    * SphinxQL query.
    */
-  public abstract build() : String;
+  public build() : String;
 }
