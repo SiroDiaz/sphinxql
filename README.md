@@ -49,4 +49,18 @@ connection.getQueryBuilder()
     console.log(err);
   });
 ```
-TODO
+
+### INSERT
+An INSERT statement is created like this:
+```ecmascript 6
+
+connection.getQueryBuilder()
+  .insert('my_rtindex', [1, 'First post', 'this is the first post for the blog...']);
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
