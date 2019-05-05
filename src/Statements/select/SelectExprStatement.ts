@@ -7,7 +7,7 @@ export default class SelectExprStatement implements StatementBuilderBase {
     this.fieldsExpr = fields;
   }
 
-  public build(): String {
+  public build(): string {
     return this.fieldsExpr.length ? this.fieldsExpr.join(', ') : '*';
   }
 

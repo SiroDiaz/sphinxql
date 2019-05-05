@@ -23,7 +23,7 @@ export default class FromExprStatement implements StatementBuilderBase {
     return index;
   }
 
-  build(): String {
+  build(): string {
     let expressions: string[];
     expressions = this.indexes.map(index => {
       return FromExprStatement.generateFromIndexExpressions(index);

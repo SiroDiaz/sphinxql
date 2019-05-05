@@ -16,7 +16,7 @@ export default class FilterCondition implements StatementBuilderBase {
     this.value = value;
   }
 
-  public build(): String {
+  public build(): string {
     let expression : string = this.columnExpr;
 
     if (this.operator.includes('IN')) {

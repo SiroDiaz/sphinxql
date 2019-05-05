@@ -1,11 +1,13 @@
 import FromExprStatement from './select/FromExprStatement';
 import HavingExprStatement from './select/HavingExprStatement';
 import LimitExprStatement from './select/LimitExprStatement';
+import OrderByExprStatement from './select/OrderByExprStatement';
 import SelectExprStatement from './select/SelectExprStatement';
 import MatchExprStatement from './select/MatchStatement';
 import ClientInterface from '../ClientInterface';
 import GroupByExprStatement from './select/GroupByExprStatement';
 import WhereStatement from './select/WhereStatement';
+import StatementBuilderBase from './StatementBuilderBase';
 
 /**
   SELECT
@@ -25,9 +27,10 @@ export default class SelectStatement {
   protected select: SelectExprStatement;
   protected fromIndexes: FromExprStatement;
   protected matchStatement: MatchExprStatement;
-  protected whereConditions: WhereStatement[];
+  protected whereConditions: WhereStatement[] = [];
   protected groupByExpr: GroupByExprStatement[];
   protected havingExpr: HavingExprStatement;
+  protected orderByFields: OrderByExprStatement[] = [];
   protected limitExpr: LimitExprStatement;
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
@@ -87,8 +90,26 @@ export default class SelectStatement {
   public groupBy(columns: string[]) {
     // console.log(order);
     const expression = new GroupByExprStatement(columns);
-
     this.groupByExpr = [...this.groupByExpr, expression];
+
+    return this;
+  }
+
+  public having(columnExpr: string, operator: string, value?: any) {
+    if (value === undefined) {
+      value = operator;
+      operator = '=';
+    }
+
+    this.havingExpr = new HavingExprStatement(columnExpr, operator, value);
+
+    return this;
+  }
+
+  public orderBy(fields: object) {
+    for (const [field, order] of Object.entries(fields)) {
+      this.orderByFields = [...this.orderByFields, new OrderByExprStatement(field, order)];
+    }
 
     return this;
   }
@@ -105,14 +126,28 @@ export default class SelectStatement {
     statement += ' FROM ';
     statement += this.fromIndexes.build();
 
-    if (this.whereConditions !== undefined && this.whereConditions.length) {
-
+    if (this.whereConditions.length) {
+      statement += ' WHERE ';
+      let stringStatements: string[];
+      stringStatements = this.whereConditions.map((condition: StatementBuilderBase) => condition.build());
+      statement += stringStatements.join(' AND ');
     }
 
     if (this.groupByExpr !== undefined) {
       statement += ' GROUP BY ';
       statement += this.groupByExpr.map(group => group.build());
       // console.log(statement);
+    }
+
+    if (this.havingExpr) {
+      statement += ` HAVING ${this.havingExpr.build()}`;
+    }
+
+    if (this.orderByFields.length) {
+      statement += ' ORDER BY ';
+      let stringStatements: string[];
+      stringStatements = this.orderByFields.map((field: StatementBuilderBase) => field.build());
+      statement += stringStatements.join(', ');
     }
 
     if (this.limitExpr !== undefined) {

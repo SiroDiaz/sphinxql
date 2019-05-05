@@ -13,7 +13,7 @@ export default class OrderByExprStatement implements StatementBuilderBase {
     this.order = order;
   }
 
-  public build(): String {
+  public build(): string {
     if (this.order) {
       return `${this.columnExpr} ${this.order}`;
     }

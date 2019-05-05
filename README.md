@@ -40,6 +40,7 @@ connection.getQueryBuilder()
   .match('title', 'harry potter')
   .where('created_at', '<',  Expression.raw('YEAR()'))
   .between(Expression.raw(`YEAR(created_at)`), 2014, 2019)
+  .orderBy({'date_published': 'ASC', 'price': 'DESC'})
   .limit(10)
   .execute()
   .then((result, fields) => {

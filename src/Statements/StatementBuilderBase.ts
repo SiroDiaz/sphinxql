@@ -4,5 +4,5 @@ export default interface StatementBuilderBase {
    * Each statement has it own implementation to generate a valid
    * SphinxQL query.
    */
-  build() : String;
+  build() : string;
 }

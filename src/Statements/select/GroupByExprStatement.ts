@@ -7,7 +7,7 @@ export default class GroupByExprStatement implements StatementBuilderBase {
     this.columnExprs = columnExprs;
   }
 
-  public build(): String {
+  public build(): string {
     return this.columnExprs.join(', ');
   }
 }

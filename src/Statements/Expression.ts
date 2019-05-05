@@ -1,4 +1,4 @@
-import SqlString from 'sqlstring';
+import { raw } from 'sqlstring';
 
 export default class Expression {
   protected expr: string;
@@ -7,11 +7,11 @@ export default class Expression {
     this.expr = expr;
   }
 
-  public static raw(expr: string) {
+  public static raw(expr: string): Expression {
     return new Expression(expr);
   }
 
   public getExpression(): string {
-    return SqlString.raw(this.expr);
+    return raw(this.expr).toSqlString();
   }
 }

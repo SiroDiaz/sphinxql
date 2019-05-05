@@ -9,7 +9,7 @@ export default class LimitExprStatement implements StatementBuilderBase {
     this.setSize(size);
   }
 
-  public build(): String {
+  public build(): string {
     let expression: string = '';
     if (this.offset > 0) {
       expression += `${this.offset}, `;
