@@ -28,7 +28,7 @@ export default class SelectStatement {
   protected fromIndexes: FromExprStatement;
   protected matchStatement: MatchExprStatement;
   protected whereConditions: WhereStatement[] = [];
-  protected groupByExpr: GroupByExprStatement[];
+  protected groupByExpr: GroupByExprStatement[] = [];
   protected havingExpr: HavingExprStatement;
   protected orderByFields: OrderByExprStatement[] = [];
   protected limitExpr: LimitExprStatement;
@@ -83,12 +83,13 @@ export default class SelectStatement {
     return this;
   }
 
-  public match() {
-
+  public match(fields: string[] | string, value?: string | undefined) {
+    console.log(fields, value);
+    
+    return this;
   }
 
   public groupBy(columns: string[]) {
-    // console.log(order);
     const expression = new GroupByExprStatement(columns);
     this.groupByExpr = [...this.groupByExpr, expression];
 
@@ -133,10 +134,11 @@ export default class SelectStatement {
       statement += stringStatements.join(' AND ');
     }
 
-    if (this.groupByExpr !== undefined) {
+    if (this.groupByExpr.length) {
       statement += ' GROUP BY ';
-      statement += this.groupByExpr.map(group => group.build());
-      // console.log(statement);
+      let stringStatements: string[];
+      stringStatements = this.groupByExpr.map((group: GroupByExprStatement) => group.build());
+      statement += stringStatements.join(', ');
     }
 
     if (this.havingExpr) {

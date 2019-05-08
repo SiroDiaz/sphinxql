@@ -93,4 +93,29 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
   });
+
+  it('selects a raw expression with an alias name and a single column in group by', () => {
+    const conn = new SphinxClient(params);
+    const compiledQuery = new QueryBuilder(conn)
+      .select('user_id', Expression.raw('COUNT(*) as total').getExpression())
+      .from('rt_sales')
+      .groupBy(['user_id'])
+      .having('total', '>', 1)
+      .generate();
+    const expectedQuery = `SELECT user_id, COUNT(*) as total FROM rt_sales GROUP BY user_id HAVING total > 1`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
+
+  it('selects with more than one column in group by', () => {
+    const conn = new SphinxClient(params);
+    const compiledQuery = new QueryBuilder(conn)
+      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+      .from('rt_sales')
+      .groupBy(['user_id', 'product_id'])
+      .generate();
+    const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales GROUP BY user_id, product_id`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
 });
