@@ -26,7 +26,7 @@ export default class SelectStatement {
   protected connection: ClientInterface;
   protected select: SelectExprStatement;
   protected fromIndexes: FromExprStatement;
-  protected matchStatement: MatchExprStatement;
+  protected matchStatement: MatchExprStatement = new MatchExprStatement();
   protected whereConditions: WhereStatement[] = [];
   protected groupByExpr: GroupByExprStatement[] = [];
   protected havingExpr: HavingExprStatement;
@@ -83,9 +83,15 @@ export default class SelectStatement {
     return this;
   }
 
-  public match(fields: string[] | string, value?: string | undefined) {
-    console.log(fields, value);
-    
+  public match(fields: string[] | string, value?: string, escapeValue: boolean = false) {
+    this.matchStatement.match((!fields.length) ? undefined : value, value, escapeValue);
+
+    return this;
+  }
+
+  public orMatch(fields: string[] | string, value?: string, escapeValue: boolean = false) {
+    this.matchStatement.orMatch((!fields.length) ? undefined : value, value, escapeValue);
+
     return this;
   }
 
@@ -127,8 +133,19 @@ export default class SelectStatement {
     statement += ' FROM ';
     statement += this.fromIndexes.build();
 
-    if (this.whereConditions.length) {
+    const hasMatchStatement: boolean = this.matchStatement.getParts().length > 0;
+    const hasWhereStatements: boolean = this.whereConditions.length > 0;
+
+    if (hasWhereStatements || hasMatchStatement) {
       statement += ' WHERE ';
+
+      if (hasMatchStatement) {
+        statement += `MATCH(${this.matchStatement.build()})`;
+        if (hasWhereStatements) {
+          statement += ' AND ';
+        }
+      }
+
       let stringStatements: string[];
       stringStatements = this.whereConditions.map((condition: StatementBuilderBase) => condition.build());
       statement += stringStatements.join(' AND ');
