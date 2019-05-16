@@ -1,4 +1,4 @@
-import SelectExprStatement from "../../../src/Statements/select/SelectExprStatement";
+import SelectExprStatement from "../../../src/Statements/statement_expressions/SelectExprStatement";
 
 describe('Tests for SELECT fields generator', () => {
 

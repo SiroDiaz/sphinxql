@@ -1,12 +1,12 @@
-import FromExprStatement from './select/FromExprStatement';
-import HavingExprStatement from './select/HavingExprStatement';
-import LimitExprStatement from './select/LimitExprStatement';
-import OrderByExprStatement from './select/OrderByExprStatement';
-import SelectExprStatement from './select/SelectExprStatement';
-import MatchExprStatement from './select/MatchStatement';
+import FromExprStatement from './statement_expressions/FromExprStatement';
+import HavingExprStatement from './statement_expressions/HavingExprStatement';
+import LimitExprStatement from './statement_expressions/LimitExprStatement';
+import OrderByExprStatement from './statement_expressions/OrderByExprStatement';
+import SelectExprStatement from './statement_expressions/SelectExprStatement';
+import MatchExprStatement from './statement_expressions/MatchStatement';
 import ClientInterface from '../ClientInterface';
-import GroupByExprStatement from './select/GroupByExprStatement';
-import WhereStatement from './select/WhereStatement';
+import GroupByExprStatement from './statement_expressions/GroupByExprStatement';
+import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
 
 /**
@@ -83,14 +83,14 @@ export default class SelectStatement {
     return this;
   }
 
-  public match(fields: string[] | string, value?: string, escapeValue: boolean = false) {
-    this.matchStatement.match((!fields.length) ? undefined : value, value, escapeValue);
+  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
+    this.matchStatement.match(fields.length ? fields : undefined, value, escapeValue);
 
     return this;
   }
 
-  public orMatch(fields: string[] | string, value?: string, escapeValue: boolean = false) {
-    this.matchStatement.orMatch((!fields.length) ? undefined : value, value, escapeValue);
+  public orMatch(fields: string[] | string, value: string, escapeValue: boolean = true) {
+    this.matchStatement.orMatch(fields.length ? fields : undefined, value, escapeValue);
 
     return this;
   }

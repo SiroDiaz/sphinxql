@@ -1,4 +1,4 @@
-import WhereStatement from "../../../src/Statements/select/WhereStatement";
+import WhereStatement from "../../../src/Statements/statement_expressions/WhereStatement";
 
 describe('Tests for SELECT fields generator', () => {
 

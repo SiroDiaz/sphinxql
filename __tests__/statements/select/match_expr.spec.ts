@@ -1,4 +1,4 @@
-import MatchStatement from '../../../src/Statements/select/MatchStatement';
+import MatchStatement from '../../../src/Statements/statement_expressions/MatchStatement';
 
 describe('MATCH clause tests in isolation', () => {
   test('it escapes/replaces special chars', () => {

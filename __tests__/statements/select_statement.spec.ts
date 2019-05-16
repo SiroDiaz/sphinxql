@@ -118,4 +118,36 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
   });
+
+  it('selects id using MATCH in a WHERE condition', () => {
+    const conn = new SphinxClient(params);
+    let compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"', false)
+      .generate();
+    let expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS")')`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"', false)
+      .orMatch('*', '"iphone apple"~4', false)
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS") | (@* "iphone apple"~4)')`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"')
+      .orMatch('*', '"iphone apple"~4', false)
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)')`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
 });

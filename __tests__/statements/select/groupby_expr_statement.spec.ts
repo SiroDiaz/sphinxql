@@ -1,4 +1,4 @@
-import GroupByExprStatement from '../../../src/Statements/select/GroupByExprStatement';
+import GroupByExprStatement from '../../../src/Statements/statement_expressions/GroupByExprStatement';
 
 describe('Tests for GROUP BY expressions', () => {
 

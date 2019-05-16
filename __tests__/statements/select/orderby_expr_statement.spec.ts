@@ -1,4 +1,4 @@
-import OrderByExprStatement from '../../../src/Statements/select/OrderByExprStatement';
+import OrderByExprStatement from '../../../src/Statements/statement_expressions/OrderByExprStatement';
 
 describe('Tests for ORDER BY fields generator', () => {
 

@@ -35,7 +35,7 @@ export default class MatchStatement implements StatementBuilderBase {
     return newEscapedValue;
   }
 
-  public match(fields: string[] | string | undefined, value: string, escapeValue: boolean = true) {
+  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
     const part = {
       logicalLeftRelation: ' ',
       fields: fields,
@@ -80,13 +80,16 @@ export default class MatchStatement implements StatementBuilderBase {
     return expression;
   }
 
+  /**
+   * Generates fields for the full-text query condition.
+   */
   protected buildFields(fields): string {
     let expression: string = '';
 
     if (fields !== undefined) {
       if (typeof fields === 'string') {
         expression += `@${fields} `;
-      } else {
+      } else {  // if is an string[]
         if (fields[0] === '!') {
           expression += `@!(${fields.slice(1).join(',')}) `;
         } else {
@@ -98,7 +101,11 @@ export default class MatchStatement implements StatementBuilderBase {
     return expression;
   }
 
+  /**
+   * Generates the text to search. It escapes the text if escapeValue
+   * is true.
+   */
   protected buildValues(value, escapeValue: boolean): string {
-      return (escapeValue) ? `${this.escapeSpecialChars(value)}` : `${value}`;
+    return escapeValue ? this.escapeSpecialChars(value) : value;
   }
 }

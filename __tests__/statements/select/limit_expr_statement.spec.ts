@@ -1,4 +1,4 @@
-import LimitExprStatement from "../../../src/Statements/select/LimitExprStatement";
+import LimitExprStatement from "../../../src/Statements/statement_expressions/LimitExprStatement";
 
 describe('Tests for SELECT fields generator', () => {
   const defaultSize = 5;

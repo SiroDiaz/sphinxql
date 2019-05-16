@@ -1,5 +1,5 @@
 import Connection from '../../../src/Connection';
-import FromExprStatement from '../../../src/Statements/select/FromExprStatement';
+import FromExprStatement from '../../../src/Statements/statement_expressions/FromExprStatement';
 require('iconv-lite').encodingExists('foo');  // fix bug with mysql2 and Jest
 
 
