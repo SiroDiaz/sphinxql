@@ -54,11 +54,39 @@ connection.getQueryBuilder()
 ### INSERT
 An INSERT statement is created like this:
 ```ecmascript 6
+const document = {
+  id: 1,
+  content: 'this is the first post for the blog...',
+  title: 'First post'
+};
 
 connection.getQueryBuilder()
-  .insert('my_rtindex', [1, 'First post', 'this is the first post for the blog...']);
+  .insert('my_rtindex', document)
   .execute()
   .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+Or using an array of key-value pairs
+```ecmascript 6
+const document = [{
+  id: 1,
+  content: 'this is the first post for the blog...',
+  title: 'First post'
+}, {
+  id: 2,
+    content: 'this is the second post for the blog...',
+    title: 'Second post'
+}];
+
+connection.getQueryBuilder()
+  .insert('my_rtindex', document)
+  .execute()
+  .then((result) => {
     console.log(result);
   })
   .catch(err => {

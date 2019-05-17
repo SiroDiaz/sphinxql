@@ -14,37 +14,59 @@ export default class InsertStatement {
     if (!index.length) {
       throw Error('real-time index must be valid but empty name provided');
     }
-    if (!(values instanceof Array)) {
-      throw Error(`Provide an array or an array of arrays for the values`);
+    if (!(values instanceof Array) && (typeof values !== 'object')) {
+      throw Error(`Provide an array or an object (key-value pair) values`);
     }
-    if (!values.length) {
-      throw Error(`empty record can not be inserted`);
+    if ((values instanceof Array) && !values.length) {
+      throw Error(`No document to insert`);
     }
     this.connection = connection;
     this.index = index;
     this.values = values;
   }
 
-  protected static renderValues(values: any[]): string {
-    const template: string = '?'.repeat(values.length)
+  /**
+   * Formats the VALUES of the document between parenthesis and escapes them.
+   * values attribute can be of this types:
+   *
+   * [{id: 1, title: 'title...'}, {id: 2, title: 'other title'}]
+   * OR
+   * {id: 1, title: 'title...'}
+   */
+  protected renderValues(values: object, columns: string[]): string {
+    const template: string = '?'.repeat(columns.length)
       .split('')
       .join(', ');
 
-    return format(`(${template})`, values);
+    // iterate through the columns array and format the values parenthesis
+    let expression: string = '(';
+    let compiledTemplate: string = template;
+
+    // tslint:disable-next-line:no-increment-decrement
+    for (let i = 0; i < columns.length; i++) {
+      compiledTemplate = compiledTemplate.replace('?', format('?', values[columns[i]]));
+    }
+    return `${expression}${compiledTemplate})`;
   }
 
   public generate() : string {
     let valuesFields: string[] = [];
+    // array of documents
+    if (this.values instanceof Array) {
+      const columns: string[] = Object.keys(this.values[0]);
+      let expression: string = `INSERT INTO ${this.index} ${this.renderColumnList(columns)} VALUES `;
 
-    if (this.values.length && this.values[0] instanceof Array) {
       valuesFields = this.values.map((values) => {
-        return InsertStatement.renderValues(values);
+        return this.renderValues(values, columns);
       });
-    } else {
-      valuesFields.push(InsertStatement.renderValues(this.values));
+
+      return `${expression}${valuesFields.join(', ')}`;
     }
 
-    return `INSERT INTO ${this.index} VALUES ${valuesFields.join(', ')}`;
+    // case of key-value object
+    const columns: string[] = Object.keys(this.values);
+
+    return `INSERT INTO ${this.index} ${this.renderColumnList(columns)} VALUES ${this.renderValues(this.values, columns)}`;
   }
 
   public execute() {
@@ -52,5 +74,9 @@ export default class InsertStatement {
     // make query
 
     return query;
+  }
+
+  protected renderColumnList(values: string[]) : string {
+    return `(${ values.join(', ') })`;
   }
 }

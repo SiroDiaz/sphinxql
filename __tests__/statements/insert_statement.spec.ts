@@ -10,40 +10,61 @@ describe('Tests for INSERT queries', () => {
 
   it('Creates a simple insert query that insert new record to rt index', () => {
     const conn = new SphinxClient(params);
-    const compiledQuery = new QueryBuilder(conn).insert('rt', [
-      1, 'Sample title', 'some random text without sense'
-    ]).generate();
-    const expectedQuery = `INSERT INTO rt VALUES (1, 'Sample title', 'some random text without sense')`;
+    const compiledQuery = new QueryBuilder(conn).insert('rt', {
+      id: 1,
+      title: 'Sample title',
+      content: 'some random text without sense',
+    }).generate();
+    const expectedQuery = `INSERT INTO rt (id, title, content) VALUES (1, 'Sample title', 'some random text without sense')`;
 
     expect(compiledQuery).toBe(expectedQuery);
   });
 
   it('Inserts multiple values into the rt index', () => {
-    // const conn = SphinxClient.mock.instances[0];
-    // TODO
     const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn).insert('rt', [
-      [1, 'Sample title', 'some random text without sense'],
-      [2, 'Second post', 'Another random and dummy text.'],
+      {id: 1, title: 'Sample title', content: 'some random text without sense'},
+      {id: 2, title: 'Second post', content: 'Another random and dummy text.'},
     ]).generate();
-    const expectedQuery = `INSERT INTO rt VALUES (1, 'Sample title', 'some random text without sense'), (2, 'Second post', 'Another random and dummy text.')`;
+    const expectedQuery = `INSERT INTO rt (id, title, content) VALUES (1, 'Sample title', 'some random text without sense'), (2, 'Second post', 'Another random and dummy text.')`;
 
     expect(compiledQuery).toBe(expectedQuery);
   });
 
   it('Fails to insert values to an rt index with empty value', () => {
-    // TODO
     const conn = new SphinxClient(params);
 
     expect(() => {
       new QueryBuilder(conn).insert('', [
-        [1, 'Sample title', 'some random text without sense'],
-        [2, 'Second post', 'Another random and dummy text.'],
+        {id: 1, title: 'Sample title', content: 'some random text without sense'},
+        {id: 2, title: 'Second post', content: 'Another random and dummy text.'},
       ]);
     }).toThrow();
 
     expect(() => {
       new QueryBuilder(conn).insert('rt', []);
     }).toThrow();
+  });
+
+  it('inserts a key-value object which the order doesn\'t matters', () => {
+    const conn = new SphinxClient(params);
+
+    expect(
+      new QueryBuilder(conn).insert('rt', {
+        id: 1,
+        title: 'Some random title',
+        content: 'Another random and dummy text.'
+      }).generate()).toBe(`INSERT INTO rt (id, title, content) VALUES (1, 'Some random title', 'Another random and dummy text.')`);
+
+    expect(
+      new QueryBuilder(conn).insert('rt', [{
+        id: 1,
+        title: 'Some random title',
+        content: 'Another random and dummy text.'
+      }, {
+        title: 'Second title',
+        id: 2,
+        content: 'Use your imagination'
+      }]).generate()).toBe(`INSERT INTO rt (id, title, content) VALUES (1, 'Some random title', 'Another random and dummy text.'), (2, 'Second title', 'Use your imagination')`);
   });
 });
