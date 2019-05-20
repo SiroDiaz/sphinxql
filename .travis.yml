@@ -15,7 +15,8 @@ branches:
 env:
   - SEARCH_BUILD=SPHINX2 EXCLUDE_GROUP="--exclude-group=Manticore"
   - SEARCH_BUILD=SPHINX3 EXCLUDE_GROUP="--exclude-group=Manticore"
-  - SEARCH_BUILD=MANTICORE
+  - SEARCH_BUILD=MANTICORE2
+  - SEARCH_BUILD=MANTICORE3
 
 
 matrix:

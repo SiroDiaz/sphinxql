@@ -11,7 +11,12 @@ case $SEARCH_BUILD in
     # gcc -shared -o data/test_udf.so $HOME/src/udfexample.c
     $HOME/search/sphinx-3.0.3/bin/searchd -c sphinx.conf
     ;;
-  MANTICORE)
+  MANTICORE2)
+    WORK=$HOME/search
+    # gcc -shared -o data/test_udf.so ms_test_udf.c
+    $WORK/usr/bin/searchd -c manticore.conf
+    ;;
+  MANTICORE3)
     WORK=$HOME/search
     # gcc -shared -o data/test_udf.so ms_test_udf.c
     $WORK/usr/bin/searchd -c manticore.conf

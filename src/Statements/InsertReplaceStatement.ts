@@ -9,8 +9,9 @@ export default class InsertStatement {
   protected connection: ClientInterface;
   protected index: string;
   protected values: any;
+  protected type: string;
 
-  constructor(connection: ClientInterface, index: string, values: any) {
+  constructor(connection: ClientInterface, index: string, values: any, insertType: string = 'INSERT') {
     if (!index.length) {
       throw Error('real-time index must be valid but empty name provided');
     }
@@ -23,6 +24,7 @@ export default class InsertStatement {
     this.connection = connection;
     this.index = index;
     this.values = values;
+    this.type = insertType
   }
 
   /**
@@ -54,7 +56,8 @@ export default class InsertStatement {
     // array of documents
     if (this.values instanceof Array) {
       const columns: string[] = Object.keys(this.values[0]);
-      let expression: string = `INSERT INTO ${this.index} ${this.renderColumnList(columns)} VALUES `;
+      let expression: string = `${this.type} INTO ${this.index} `;
+      expression += `${this.renderColumnList(columns)} VALUES `;
 
       valuesFields = this.values.map((values) => {
         return this.renderValues(values, columns);
@@ -66,7 +69,8 @@ export default class InsertStatement {
     // case of key-value object
     const columns: string[] = Object.keys(this.values);
 
-    return `INSERT INTO ${this.index} ${this.renderColumnList(columns)} VALUES ${this.renderValues(this.values, columns)}`;
+    return `${this.type} INTO ${this.index} ${this.renderColumnList(columns)} ` +
+      `VALUES ${this.renderValues(this.values, columns)}`;
   }
 
   public execute() {
@@ -76,7 +80,13 @@ export default class InsertStatement {
     return query;
   }
 
-  protected renderColumnList(values: string[]) : string {
-    return `(${ values.join(', ') })`;
+  /**
+   * Compiles the list of columns to insert in the correct order
+   * the document/s. It goes before VALUES keyword.
+   * 
+   * Example output: (id, title, content)
+   */
+  protected renderColumnList(columns: string[]) : string {
+    return `(${ columns.join(', ') })`;
   }
 }

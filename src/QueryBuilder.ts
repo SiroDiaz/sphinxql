@@ -1,5 +1,5 @@
 import ClientInterface from './ClientInterface';
-import InsertStatement from './Statements/InsertStatement';
+import InsertStatement from './Statements/InsertReplaceStatement';
 import SelectStatement from './Statements/SelectStatement';
 
 export default class QueryBuilder {
@@ -29,5 +29,9 @@ export default class QueryBuilder {
 
   public insert(index: string, values: any): InsertStatement {
     return new InsertStatement(this.connection, index, values);
+  }
+
+  public replace(index: string, values: any): InsertStatement {
+    return new InsertStatement(this.connection, index, values, 'REPLACE');
   }
 }

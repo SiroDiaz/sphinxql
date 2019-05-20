@@ -67,4 +67,16 @@ describe('Tests for INSERT queries', () => {
         content: 'Use your imagination'
       }]).generate()).toBe(`INSERT INTO rt (id, title, content) VALUES (1, 'Some random title', 'Another random and dummy text.'), (2, 'Second title', 'Use your imagination')`);
   });
+
+  it('Creates a simple REPLACE query', () => {
+    const conn = new SphinxClient(params);
+    const compiledQuery = new QueryBuilder(conn).replace('rt', {
+      id: 1,
+      title: 'Sample title',
+      content: 'some random text without sense',
+    }).generate();
+    const expectedQuery = `REPLACE INTO rt (id, title, content) VALUES (1, 'Sample title', 'some random text without sense')`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
 });
