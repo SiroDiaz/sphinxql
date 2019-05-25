@@ -7,6 +7,9 @@ SphinxQL query builder for Node.JS wrote in Typescript. Make easy queries avoidi
 to write raw SphinxQL strings always that you can. By default, it uses escaped query parameters, always
 thinking in security.
 
+It is heavily inspired in the PHP [SphinxQL-Query-Builder](https://github.com/FoolCode/SphinxQL-Query-Builder) 
+and also the Eloquent query builder (Laravel framework ORM)
+
 The client used for create connection is [mysql2](https://github.com/sidorares/node-mysql2) that is focused
 in performance.
 

@@ -8,6 +8,8 @@ import ClientInterface from '../ClientInterface';
 import GroupByExprStatement from './statement_expressions/GroupByExprStatement';
 import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
+import OptionExprStatement from './statement_expressions/OptionExprStatement';
+import FacetStatement from './FacetStatement';
 
 /**
   SELECT
@@ -32,6 +34,7 @@ export default class SelectStatement {
   protected havingExpr: HavingExprStatement;
   protected orderByFields: OrderByExprStatement[] = [];
   protected limitExpr: LimitExprStatement;
+  protected optionExprs: OptionExprStatement[] = [];
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
     this.connection = connection;
@@ -83,18 +86,35 @@ export default class SelectStatement {
     return this;
   }
 
+  /**
+   * Adds an AND logical operator (by default) to the new full text condition.
+   * It recieves a field or an array of string fields to match against.
+   * "value" parameter is used for the text to match.
+   * If escapeValue is true (default) it will escape full text operators
+   * to prevent security issues, else the value will contain syntax FT operators
+   * to make possible use proximity, negation, exact phrase, and so forth.
+   */
   public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
     this.matchStatement.match(fields.length ? fields : undefined, value, escapeValue);
 
     return this;
   }
 
+  /**
+   * Adds an OR "|" logical operator to the new full text condition.
+   * It MUST be used after call "match" method because "orMatch" preppends
+   * the OR operator.
+   */
   public orMatch(fields: string[] | string, value: string, escapeValue: boolean = true) {
     this.matchStatement.orMatch(fields.length ? fields : undefined, value, escapeValue);
 
     return this;
   }
 
+  /**
+   * Creates the a GROUP BY expression and append it to the
+   * end of the array.
+   */
   public groupBy(columns: string[]) {
     const expression = new GroupByExprStatement(columns);
     this.groupByExpr = [...this.groupByExpr, expression];
@@ -102,6 +122,10 @@ export default class SelectStatement {
     return this;
   }
 
+  /**
+   * Creates a HAVING expression.
+   * Only is allowed one condition in HAVING expression.
+   */
   public having(columnExpr: string, operator: string, value?: any) {
     if (value === undefined) {
       value = operator;
@@ -113,6 +137,9 @@ export default class SelectStatement {
     return this;
   }
 
+  /**
+   * Creates an ORDER BY expression and appends it to the end of columns.
+   */
   public orderBy(fields: object) {
     for (const [field, order] of Object.entries(fields)) {
       this.orderByFields = [...this.orderByFields, new OrderByExprStatement(field, order)];
@@ -121,8 +148,50 @@ export default class SelectStatement {
     return this;
   }
 
-  public limit(offset: number = 0, size: number = 5) {
-    this.limitExpr = new LimitExprStatement(offset, size);
+  /**
+   * Creates a LIMIT expression if doesn't exist with a default size.
+   * If "limit" method has been called before then updates the offset.
+   */
+  public offset(offset: number = 0) {
+    if (this.limitExpr !== undefined) {
+      this.limitExpr.setOffset(offset);
+    } else {
+      this.limitExpr = new LimitExprStatement(offset);
+    }
+
+    return this;
+  }
+
+  /**
+   * Creates a LIMIT expression if doesn't exist with the specified
+   * size (length or number of results).
+   * If "offset" method has been called before then updates the size.
+   */
+  public limit(size: number = 5) {
+    if (this.limitExpr !== undefined) {
+      this.limitExpr.setSize(size);
+    } else {
+      this.limitExpr = new LimitExprStatement(0, size);
+    }
+
+    return this;
+  }
+
+  /**
+   * Creates a new option and appends it at the end of OPTION expressions.
+   * "option" parameter is the name of the option and "value", as you might guest,
+   * contains all the option values. "value" can be a key/value object, a string
+   * or a Expression instance object.
+   */
+  public option(option: string, value: any) {
+    this.optionExprs = [...this.optionExprs, new OptionExprStatement(option, value)];
+
+    return this;
+  }
+
+  public facet(cb) {
+    let values = [];
+    values = [...values, cb.apply(this, [new FacetStatement(this.connection)])];
 
     return this;
   }
@@ -171,6 +240,10 @@ export default class SelectStatement {
 
     if (this.limitExpr !== undefined) {
       statement += ` LIMIT ${this.limitExpr.build()}`;
+    }
+
+    if (this.optionExprs.length) {
+      statement += ` OPTION ${this.optionExprs.map((option) => option.build()).join(',')}`;
     }
 
     return statement;

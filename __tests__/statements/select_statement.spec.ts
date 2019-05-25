@@ -150,4 +150,87 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
   });
+
+  it('selects id and use limit and offset methods', () => {
+    const conn = new SphinxClient(params);
+    let compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .limit(10)
+      .generate();
+    let expectedQuery = `SELECT id FROM rt_sales LIMIT 10`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .offset(10)
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales LIMIT 10, 5`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .offset()
+      .limit()
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales LIMIT 5`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
+
+  it('uses OPTION expression for customizing the search', () => {
+    //TODO
+    const conn = new SphinxClient(params);
+    let compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"', false)
+      .option('ranker', 'sph04')
+      .generate();
+    let expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS")') OPTION ranker='sph04'`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"', false)
+      .orMatch('*', '"iphone apple"~4', false)
+      .option('ranker', Expression.raw('sph04'))
+      .option('field_weights', {product_name: 100})
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS") | (@* "iphone apple"~4)') OPTION ranker=sph04,field_weights=(product_name=100)`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"')
+      .orMatch('*', '"iphone apple"~4', false)
+      .limit(5)
+      .option('ranker', Expression.raw('sph04'))
+      .option('field_weights', {product_name: 100})
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)') LIMIT 5 OPTION ranker=sph04,field_weights=(product_name=100)`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+
+    compiledQuery = new QueryBuilder(conn)
+      .select('id')
+      .from('rt_sales')
+      .match('product_name', '"iPhone XS"')
+      .orMatch('*', '"iphone apple"~4', false)
+      .limit(5)
+      .option('ranker', Expression.raw('sph04'))
+      .option('field_weights', {product_name: 100, other: 1})
+      .generate();
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)') LIMIT 5 OPTION ranker=sph04,field_weights=(product_name=100,other=1)`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
 });
