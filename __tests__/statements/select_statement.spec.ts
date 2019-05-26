@@ -183,7 +183,6 @@ describe('Tests for select queries', () => {
   });
 
   it('uses OPTION expression for customizing the search', () => {
-    //TODO
     const conn = new SphinxClient(params);
     let compiledQuery = new QueryBuilder(conn)
       .select('id')

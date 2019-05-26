@@ -54,6 +54,9 @@ connection.getQueryBuilder()
   });
 ```
 
+### SELECT
+//TODO
+
 ### INSERT
 An INSERT statement is created like this:
 ```ecmascript 6
@@ -74,7 +77,7 @@ connection.getQueryBuilder()
   });
 ```
 
-Or using an array of key-value pairs
+Or using an array of key-value pairs to insert multiple values in the same query
 ```ecmascript 6
 const document = [{
   id: 1,
@@ -95,4 +98,45 @@ connection.getQueryBuilder()
   .catch(err => {
     console.log(err);
   });
+```
+
+### Transactions
+This package also comes with support for transactions. Remember that transactions are only
+available for RT indexes. For more information visit [transactions documentation for Manticore search](https://docs.manticoresearch.com/latest/html/sphinxql_reference/begin,_commit,_and_rollback_syntax.html).
+
+The transactions API is simple and the list of methods is below here:
+- connection.getQueryBuilder().transaction().begin()
+- connection.getQueryBuilder().transaction().start()  // same that begin()
+- connection.getQueryBuilder().transaction().commit()
+- connection.getQueryBuilder().transaction().rollback()
+
+all this methods returns a promise object.
+
+A simple example working with transactions:
+```exmascript 6
+const document = {
+  id: 1,
+  content: 'this is the first post for the blog...',
+  title: 'First post'
+};
+
+const insertDocumentAndCommit = async (doc) => {
+  await connection.getQueryBuilder().transaction().begin();
+  
+  connection.getQueryBuilder()
+    .insert('my_rtindex', doc)
+    .execute()
+    .then((result, fields) => {
+      console.log(result);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+    await connection.getQueryBuilder().transaction().commit();
+
+    return true;
+}
+
+insertDocumentAndCommit(document);
 ```
