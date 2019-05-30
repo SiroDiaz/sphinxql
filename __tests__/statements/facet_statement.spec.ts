@@ -1,6 +1,6 @@
-import OptionExprStatement from "../../src/Statements/statement_expressions/OptionExprStatement";
 import FacetStatement from '../../src/Statements/FacetStatement';
 import SphinxClient from '../../src/SphinxClient';
+import Expression from '../../src/Statements/Expression';
 require('iconv-lite').encodingExists('foo');  // fix bug with mysql2 and Jest
 
 describe('Tests for FACET expressions', () => {
@@ -10,35 +10,57 @@ describe('Tests for FACET expressions', () => {
     multipleStatements: true, // set to true for enabling faceted query results
   };
 
-  test('simple FACET by column', () => {
-    const connection = new SphinxClient(params);
+  const connection = new SphinxClient(params);
+
+  test('simple FACET by columns', () => {
     const facet = new FacetStatement(connection);
-    facet.facet(['category_id', 'year']);
-    /*
-    const expr = new FacetStatement(conn, (facetBuilder) => {
-      return facetBuilder
-        .select()
-        .by()
-        .orderBy(Expression.raw('FACET() asc'))
-        .offset(0)
-        .limit(5)
-    });
-    expect(expr.build()).toBe(`key='value'`);
-    */
-   expect(true).toBeTruthy();
+    facet.field('category_id');
+    expect(facet.build()).toBe('category_id');
+    
+    facet.fields(['year', 'product_id']);
+    expect(facet.build()).toBe('category_id, year, product_id');
+
+    facet.field(Expression.raw('COUNT(something)'));
+    expect(facet.build()).toBe('category_id, year, product_id, COUNT(something)');
   });
 
-  test('escape value of a option', () => {
-    const expr = new OptionExprStatement('comment', 'this should be quoted');
-    expect(expr.build()).toBe(`comment='this should be quoted'`);
+  test('by expression with different values', () => {
+    const facet = new FacetStatement(connection);
+    facet
+      .fields(['category_id', 'product_id'])
+      .by(['category_id', 'product_id']);
+    expect(facet.build()).toBe(`category_id, product_id BY category_id, product_id`);
   });
 
-  test('not escape the string passed', () => {
-    expect(true).toBeTruthy();
+  test('limit expression with and without offset', () => {
+    const facet = new FacetStatement(connection);
+    facet
+      .fields(['category_id', 'product_id'])
+      .offset(5);
+    
+    expect(facet.build()).toBe(`category_id, product_id LIMIT 5, 5`);  
+    
+    facet.limit(10);
+    expect(facet.build()).toBe(`category_id, product_id LIMIT 5, 10`);
   });
 
-  test('value is an key/value object that should be joined with commas', () => {
-    const expr = new OptionExprStatement('field_weights', {title: 100, content: 1});
-    expect(expr.build()).toBe('field_weights=(title=100,content=1)');
+  test('group by method with expressions and string', () => {
+    const facet = new FacetStatement(connection);
+
+    facet.field('category_id').orderBy(Expression.raw('FACET()'), 'DESC');
+    expect(facet.build()).toBe('category_id ORDER BY FACET() DESC');
+  });
+
+  test('all facet methods working together', () => {
+    const facet = new FacetStatement(connection);
+    facet
+      .fields([Expression.raw('price_range AS fprice_range'), 'brand_name'])
+      .orderBy('brand_name', 'ASC');
+
+    expect(facet.build()).toBe('price_range AS fprice_range, brand_name ORDER BY brand_name ASC');
+
+    facet.limit();
+
+    expect(facet.build()).toBe('price_range AS fprice_range, brand_name ORDER BY brand_name ASC LIMIT 5');
   });
 });
