@@ -21,7 +21,7 @@ TODO
 
 Just run the npm command:
 ```bash
-$ npm install --save sphinxql
+npm install --save sphinxql
 ```
 
 ## usage
@@ -29,7 +29,7 @@ $ npm install --save sphinxql
 To create a simple connection (not the most recommended, use a pool connection)
 and write your first query, just do this:
 
-```ecmascript 6
+```javascript
 const sphinxql = require('sphinxql');
 
 const connection = sphinxql.createConnection({
@@ -59,7 +59,7 @@ connection.getQueryBuilder()
 
 ### INSERT
 An INSERT statement is created like this:
-```ecmascript 6
+```javascript
 const document = {
   id: 1,
   content: 'this is the first post for the blog...',
@@ -78,7 +78,7 @@ connection.getQueryBuilder()
 ```
 
 Or using an array of key-value pairs to insert multiple values in the same query
-```ecmascript 6
+```javascript
 const document = [{
   id: 1,
   content: 'this is the first post for the blog...',
@@ -113,7 +113,7 @@ The transactions API is simple and the list of methods is below here:
 all this methods returns a promise object.
 
 A simple example working with transactions:
-```exmascript 6
+```javascript
 const document = {
   id: 1,
   content: 'this is the first post for the blog...',

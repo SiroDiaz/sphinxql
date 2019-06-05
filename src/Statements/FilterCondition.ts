@@ -30,7 +30,7 @@ export default class FilterCondition implements StatementBuilderBase {
     return expression;
   }
 
-  protected static getExpressionCompare(value: any) {
+  public static getExpressionCompare(value: any) {
     if (value instanceof Expression) {
       return value.getExpression();
     }

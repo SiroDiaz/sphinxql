@@ -2,6 +2,7 @@ import ClientInterface from './ClientInterface';
 import InsertStatement from './Statements/InsertReplaceStatement';
 import SelectStatement from './Statements/SelectStatement';
 import TransactionStatement from './Statements/TransactionStatement';
+import UpdateStatement from './Statements/UpdateStatement';
 
 export default class QueryBuilder {
   // protected type: QueryType;
@@ -34,6 +35,14 @@ export default class QueryBuilder {
 
   public replace(index: string, values: any): InsertStatement {
     return new InsertStatement(this.connection, index, values, 'REPLACE');
+  }
+
+  public update(index: string): UpdateStatement {
+    return new UpdateStatement(this.connection, index);
+  }
+
+  public delete() {
+
   }
 
   public transaction(): TransactionStatement {
