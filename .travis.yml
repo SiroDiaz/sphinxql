@@ -34,7 +34,6 @@ before_install:
   - popd
 
 before_script:
-  - cd tests
   - $TRAVIS_BUILD_DIR/__tests__/run.sh
   - npm install
 
