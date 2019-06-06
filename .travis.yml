@@ -30,11 +30,13 @@ matrix:
 before_install:
   - mkdir $HOME/search
   - pushd $HOME/search
-  - $TRAVIS_BUILD_DIR/__tests__/install.sh
+  - ./$TRAVIS_BUILD_DIR/__tests__/install.sh
   - popd
 
 before_script:
-  - $TRAVIS_BUILD_DIR/__tests__/run.sh
+  - cd __tests__
+  - ./$TRAVIS_BUILD_DIR/__tests__/run.sh
+  - cd ..
   - npm install
 
 script: npm run test
