@@ -100,6 +100,15 @@ connection.getQueryBuilder()
   });
 ```
 
+### REPLACE
+```javascript
+const document = {
+  id: 1,
+  content: 'this is the first post for the blog...',
+  title: 'First post'
+};
+```
+
 ### UPDATE
 ```javascript
 const document = {
@@ -143,7 +152,7 @@ const document = {
 };
 
 const insertDocumentAndCommit = async (doc) => {
-  await connection.getQueryBuilder().transaction().begin();
+  await connection.getQueryBuilder().transaction.begin();
   
   connection.getQueryBuilder()
     .insert('my_rtindex', doc)
@@ -155,7 +164,7 @@ const insertDocumentAndCommit = async (doc) => {
       console.log(err);
     });
 
-    await connection.getQueryBuilder().transaction().commit();
+    await connection.getQueryBuilder().transaction.commit();
 
     return true;
 }

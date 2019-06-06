@@ -36,7 +36,7 @@ before_install:
 before_script:
   - composer dump-autoload
   - cd tests
-  - $TRAVIS_BUILD_DIR/tests/run.sh
+  - $TRAVIS_BUILD_DIR/__tests__/run.sh
   - npm install
 
 script: npm run test

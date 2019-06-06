@@ -46,6 +46,10 @@ export default class QueryBuilder {
     return new DeleteStatement(this.connection, index);
   }
 
+  public optimizeIndex(index: string): Promise<any> {
+    return this.connection.query(`OPTIMIZE INDEX ${index}`);
+  }
+
   get transaction(): TransactionStatement {
     return new TransactionStatement(this.connection);
   }
