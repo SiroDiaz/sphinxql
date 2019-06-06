@@ -30,7 +30,7 @@ matrix:
 before_install:
   - mkdir $HOME/search
   - pushd $HOME/search
-  - $TRAVIS_BUILD_DIR/tests/install.sh
+  - $TRAVIS_BUILD_DIR/__tests__/install.sh
   - popd
 
 before_script:
