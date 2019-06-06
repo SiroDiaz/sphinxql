@@ -3,6 +3,7 @@ import InsertStatement from './Statements/InsertReplaceStatement';
 import SelectStatement from './Statements/SelectStatement';
 import TransactionStatement from './Statements/TransactionStatement';
 import UpdateStatement from './Statements/UpdateStatement';
+import DeleteStatement from './Statements/DeleteStatement';
 
 export default class QueryBuilder {
   // protected type: QueryType;
@@ -41,8 +42,8 @@ export default class QueryBuilder {
     return new UpdateStatement(this.connection, index);
   }
 
-  public delete() {
-
+  public delete(index: string): DeleteStatement {
+    return new DeleteStatement(this.connection, index);
   }
 
   public transaction(): TransactionStatement {
