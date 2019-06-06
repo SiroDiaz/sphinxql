@@ -101,12 +101,23 @@ connection.getQueryBuilder()
 ```
 
 ### REPLACE
+Replaces a document using the doc id or insert. Similar to insert.
 ```javascript
 const document = {
   id: 1,
   content: 'this is the first post for the blog...',
-  title: 'First post'
+  title: 'UPDATE! First post'
 };
+
+connection.getQueryBuilder()
+  .replace('my_rtindex', document)
+  .execute()
+  .then((result) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 ```
 
 ### UPDATE
