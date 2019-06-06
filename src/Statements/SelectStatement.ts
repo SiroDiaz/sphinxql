@@ -250,9 +250,6 @@ export default class SelectStatement {
   }
 
   public execute() {
-    const query = this.generate();
-    // make query
-
-    return query;
+    return this.connection.execute(this.generate(), []);
   }
 }

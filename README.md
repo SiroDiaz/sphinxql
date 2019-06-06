@@ -100,15 +100,37 @@ connection.getQueryBuilder()
   });
 ```
 
+### UPDATE
+```javascript
+const document = {
+  content: 'UPDATE! it\'s an old post. this is the first post for the blog...',
+  title: 'First post (edit)'
+};
+
+connection.getQueryBuilder()
+  .update('my_rtindex')
+  .set(document)
+  .match('fullname', 'John')
+  .where('salary', '<', 3000)
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+
 ### Transactions
 This package also comes with support for transactions. Remember that transactions are only
 available for RT indexes. For more information visit [transactions documentation for Manticore search](https://docs.manticoresearch.com/latest/html/sphinxql_reference/begin,_commit,_and_rollback_syntax.html).
 
 The transactions API is simple and the list of methods is below here:
-- connection.getQueryBuilder().transaction().begin()
-- connection.getQueryBuilder().transaction().start()  // same that begin()
-- connection.getQueryBuilder().transaction().commit()
-- connection.getQueryBuilder().transaction().rollback()
+- connection.getQueryBuilder().transaction.begin()
+- connection.getQueryBuilder().transaction.start()  // same that begin()
+- connection.getQueryBuilder().transaction.commit()
+- connection.getQueryBuilder().transaction.rollback()
 
 all this methods returns a promise object.
 

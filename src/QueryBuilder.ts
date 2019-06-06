@@ -46,7 +46,7 @@ export default class QueryBuilder {
     return new DeleteStatement(this.connection, index);
   }
 
-  public transaction(): TransactionStatement {
+  get transaction(): TransactionStatement {
     return new TransactionStatement(this.connection);
   }
 }

@@ -107,9 +107,6 @@ export default class DeleteStatement {
   }
 
   public execute() {
-    const query = this.generate();
-    // make query
-
-    return query;
+    return this.connection.execute(this.generate(), []);
   }
 }
