@@ -8,8 +8,13 @@ describe('Tests for INSERT queries', () => {
     port: 9307,
   };
 
+  const conn = new SphinxClient(params);
+
+  afterAll(() => {
+    conn.close();
+  })
+
   it('Creates a simple insert query that insert new record to rt index', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn).insert('rt', {
       id: 1,
       title: 'Sample title',
@@ -21,7 +26,6 @@ describe('Tests for INSERT queries', () => {
   });
 
   it('Inserts multiple values into the rt index', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn).insert('rt', [
       {id: 1, title: 'Sample title', content: 'some random text without sense'},
       {id: 2, title: 'Second post', content: 'Another random and dummy text.'},
@@ -32,8 +36,6 @@ describe('Tests for INSERT queries', () => {
   });
 
   it('Fails to insert values to an rt index with empty value', () => {
-    const conn = new SphinxClient(params);
-
     expect(() => {
       new QueryBuilder(conn).insert('', [
         {id: 1, title: 'Sample title', content: 'some random text without sense'},
@@ -47,8 +49,6 @@ describe('Tests for INSERT queries', () => {
   });
 
   it('inserts a key-value object which the order doesn\'t matters', () => {
-    const conn = new SphinxClient(params);
-
     expect(
       new QueryBuilder(conn).insert('rt', {
         id: 1,
@@ -69,7 +69,6 @@ describe('Tests for INSERT queries', () => {
   });
 
   it('Creates a simple REPLACE query', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn).replace('rt', {
       id: 1,
       title: 'Sample title',

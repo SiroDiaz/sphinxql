@@ -14,5 +14,6 @@ describe('greeter function', () => {
     expect(connection.getQueryBuilder()).not.toBe(null);
     expect(connection.getQueryBuilder()).toBeInstanceOf(QueryBuilder);
     expect(true).toBeTruthy();
+    connection.getConnection().close();
   });
 });

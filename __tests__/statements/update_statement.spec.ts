@@ -19,6 +19,7 @@ describe('Tests for UPDATE statement', () => {
     const expectedQuery = `UPDATE rt SET description='new description text for the post', title='UPDATE 2019!', rank=12 WHERE id = 2`;
 
     expect(compiledQuery).toBe(expectedQuery);
+    conn.close();
   });
 
   test('updates with a match condition', () => {
@@ -31,6 +32,7 @@ describe('Tests for UPDATE statement', () => {
     const expectedQuery = `UPDATE rt SET title='UPDATE no dinosaurs in 2019!' WHERE MATCH('(@(title,content) dinosaur)')`;
 
     expect(compiledQuery).toBe(expectedQuery);
+    conn.close();
   });
 
   test('updates with multiple conditions', () => {
@@ -44,6 +46,7 @@ describe('Tests for UPDATE statement', () => {
       const expectedQuery = `UPDATE rt SET title='UPDATE there\\'re not dinosaurs in 2030!' WHERE MATCH('(@(title,content) dinosaur)') AND published_at < 2030`;
 
     expect(compiledQuery).toBe(expectedQuery);
+    conn.close();
   });
 
   it('updates with OPTION expression for customizing the search', () => {
@@ -57,5 +60,6 @@ describe('Tests for UPDATE statement', () => {
     let expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS")') OPTION ranker='sph04'`;
 
     expect(compiledQuery).toBe(expectedQuery);
+    conn.close();
   });
 });

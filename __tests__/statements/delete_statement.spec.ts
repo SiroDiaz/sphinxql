@@ -8,8 +8,13 @@ describe('Tests for DELETE statement', () => {
     port: 9307,
   };
 
+  const conn = new SphinxClient(params);
+
+  beforeAll(() => {
+    conn.close();
+  });
+
   test('deletes with a where condition', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .delete('rt')
       .where('id', '=', 2)
@@ -20,7 +25,6 @@ describe('Tests for DELETE statement', () => {
   });
 
   test('deletes with a match condition', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .delete('rt')
       .match(['title', 'content'], 'dinosaur')
@@ -31,7 +35,6 @@ describe('Tests for DELETE statement', () => {
   });
 
   test('deletes with multiple conditions', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .delete('rt')
       .match(['title', 'content'], 'dinosaur')

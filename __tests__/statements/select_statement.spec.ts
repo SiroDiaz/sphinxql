@@ -9,8 +9,14 @@ describe('Tests for select queries', () => {
     port: 9307,
   };
 
+  const conn = new SphinxClient(params);
+
+  afterAll(() => {
+    conn.close();
+  })
+
   it('should create a simple select query selecting all fields from rt index', () => {
-    const conn = new SphinxClient(params);
+    
     const compiledQuery = new QueryBuilder(conn)
       .select('*')
       .from('rt')
@@ -21,7 +27,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects just two fields from rt with a simple where condition', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt')
@@ -33,7 +38,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects the id from rt in descending order', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt')
@@ -45,7 +49,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects the id from rt ordered by published date in ascending order and from expensive to cheapest', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt')
@@ -57,7 +60,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with WHERE conditions', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('*')
       .from('rt')
@@ -70,7 +72,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with WHERE and HAVING conditions', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('*')
       .from('rt')
@@ -84,7 +85,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects a raw expression with an alias name', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select(Expression.raw('COUNT(*) as total').getExpression())
       .from('rt')
@@ -95,7 +95,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects a raw expression with an alias name and a single column in group by', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('user_id', Expression.raw('COUNT(*) as total').getExpression())
       .from('rt_sales')
@@ -108,7 +107,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with more than one column in group by', () => {
-    const conn = new SphinxClient(params);
     const compiledQuery = new QueryBuilder(conn)
       .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
       .from('rt_sales')
@@ -120,7 +118,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects id using MATCH in a WHERE condition', () => {
-    const conn = new SphinxClient(params);
     let compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt_sales')
@@ -152,7 +149,6 @@ describe('Tests for select queries', () => {
   });
 
   it('selects id and use limit and offset methods', () => {
-    const conn = new SphinxClient(params);
     let compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt_sales')
@@ -183,7 +179,6 @@ describe('Tests for select queries', () => {
   });
 
   it('uses OPTION expression for customizing the search', () => {
-    const conn = new SphinxClient(params);
     let compiledQuery = new QueryBuilder(conn)
       .select('id')
       .from('rt_sales')
