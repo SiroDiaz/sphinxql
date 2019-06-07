@@ -10,6 +10,10 @@ describe('Tests for SELECT fields generator', () => {
     port: 9307,
   });
 
+  afterAll(() => {
+    connection.getConnection().close();
+  })
+
   it('should create a multiple column string', () => {
     const generator = new FromExprStatement('rt');
 
@@ -17,15 +21,9 @@ describe('Tests for SELECT fields generator', () => {
   });
 
   it('should return indexes separated by ", " when string index is passed', () => {
-    const connection = Connection.createConnection({
-      host: '127.0.0.1',
-      port: 9307,
-    });
-    // connection.getQueryBuilder()
     const generator = new FromExprStatement('rt', 'book');
 
     expect(generator.build()).toBe('rt, book');
-    connection.getConnection().close();
   });
 
   it('should create a simple subquery string between parentheses', () => {

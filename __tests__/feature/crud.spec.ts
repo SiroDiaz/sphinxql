@@ -27,6 +27,10 @@ describe('Tests for select queries', () => {
 
   const conn = new SphinxClient(params);
 
+  afterAll(() => {
+    conn.close();
+  })
+
   test('inserts two documents into an index', async () => {
     try {
       const qb = new QueryBuilder(conn);

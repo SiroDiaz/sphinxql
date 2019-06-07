@@ -2,8 +2,6 @@ import SphinxClient from '../src/SphinxClient';
 
 describe('Test Sphinx/Manticore client connector', () => {
 
-  jest.useFakeTimers();
-
   const params = {
     host: '127.0.0.1',
     port: 9307,

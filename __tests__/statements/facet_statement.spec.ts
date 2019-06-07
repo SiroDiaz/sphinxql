@@ -12,6 +12,10 @@ describe('Tests for FACET expressions', () => {
 
   const connection = new SphinxClient(params);
 
+  afterAll(() => {
+    connection.close();
+  })
+
   test('simple FACET by columns', () => {
     const facet = new FacetStatement(connection);
     facet.field('category_id');
