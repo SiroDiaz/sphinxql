@@ -1,3 +1,4 @@
+require ('es7-object-polyfill');
 import StatementBuilderBase from '../StatementBuilderBase';
 
 export default class MatchStatement implements StatementBuilderBase {

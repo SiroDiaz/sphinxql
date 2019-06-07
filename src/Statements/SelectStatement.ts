@@ -1,3 +1,4 @@
+require ('es7-object-polyfill');
 import FromExprStatement from './statement_expressions/FromExprStatement';
 import HavingExprStatement from './statement_expressions/HavingExprStatement';
 import LimitExprStatement from './statement_expressions/LimitExprStatement';

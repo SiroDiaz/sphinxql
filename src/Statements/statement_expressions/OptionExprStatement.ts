@@ -1,3 +1,4 @@
+require ('es7-object-polyfill');
 import { format } from 'sqlstring';
 import StatementBuilderBase from '../StatementBuilderBase';
 import Expression from '../Expression';

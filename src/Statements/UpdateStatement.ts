@@ -1,3 +1,4 @@
+require ('es7-object-polyfill');
 import MatchExprStatement from './statement_expressions/MatchStatement';
 import ClientInterface from '../ClientInterface';
 import WhereStatement from './statement_expressions/WhereStatement';
