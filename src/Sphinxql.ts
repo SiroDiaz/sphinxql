@@ -3,7 +3,7 @@ import QueryBuilder from './QueryBuilder';
 import SphinxClient from './SphinxClient';
 import SphinxClientPool from './SphinxClientPool';
 
-export default class Connection {
+export default class Sphinxql {
   protected connection: ClientInterface;
 
   public constructor(connection: ClientInterface) {
@@ -30,9 +30,9 @@ export default class Connection {
    * 
    * @param params object containing 
    */
-  public static createConnection(params: object) {
+  public static createConnection(params: object): Sphinxql {
     const client = new SphinxClient(params);
-    return new Connection(client);
+    return new Sphinxql(client);
   }
 
   /**
@@ -40,8 +40,8 @@ export default class Connection {
    * 
    * @param params an object containing the MySQL client connection properties
    */
-  public static createPoolConnection(params: object) : Connection {
+  public static createPoolConnection(params: object) : Sphinxql {
     const client = new SphinxClientPool(params);
-    return new Connection(client);
+    return new Sphinxql(client);
   }
 }

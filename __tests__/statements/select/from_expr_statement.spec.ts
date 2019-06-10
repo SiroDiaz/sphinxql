@@ -1,11 +1,11 @@
-import Connection from '../../../src/Connection';
+import Sphinxql from '../../../src/Sphinxql';
 import FromExprStatement from '../../../src/Statements/statement_expressions/FromExprStatement';
 require('iconv-lite').encodingExists('foo');  // fix bug with mysql2 and Jest
 
 
 describe('Tests for SELECT fields generator', () => {
 
-  const connection = Connection.createConnection({
+  const connection = Sphinxql.createConnection({
     host: '127.0.0.1',
     port: 9307,
   });
