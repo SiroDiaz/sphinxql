@@ -4,6 +4,7 @@ import SelectStatement from './Statements/SelectStatement';
 import TransactionStatement from './Statements/TransactionStatement';
 import UpdateStatement from './Statements/UpdateStatement';
 import DeleteStatement from './Statements/DeleteStatement';
+import AttachIndexStatement from './Statements/AttachIndexStatement';
 
 export default class QueryBuilder {
   // protected type: QueryType;
@@ -48,6 +49,10 @@ export default class QueryBuilder {
 
   public optimizeIndex(index: string): Promise<any> {
     return this.connection.query(`OPTIMIZE INDEX ${index}`);
+  }
+
+  public attachIndex(diskIndex: string): AttachIndexStatement {
+    return new AttachIndexStatement(this.connection, diskIndex);
   }
 
   get transaction(): TransactionStatement {

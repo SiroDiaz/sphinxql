@@ -32,14 +32,14 @@ and write your first query, just do this:
 ```javascript
 const sphinxql = require('sphinxql');
 
-const connection = sphinxql.createConnection({
+const sphql = sphinxql.createConnection({
   host: 'localhost',
   port: 9306
 });
 
-connection.getQueryBuilder()
+sphql.getQueryBuilder()
   .select('*')
-  .from('book')
+  .from('books')
   .match('title', 'harry potter')
   .where('created_at', '<',  Expression.raw('YEAR()'))
   .between(Expression.raw(`YEAR(created_at)`), 2014, 2019)
@@ -55,6 +55,38 @@ connection.getQueryBuilder()
 ```
 
 ### SELECT
+
+This section is separated in many parts but if you have used SphinxQL before or SQL you can
+see this section also very basic for you. Anyway i recommend strongly to read the Manticore Search or Sphinx documentation
+for making a good idea of how to use this API.
+
+#### WHERE and MATCH methods
+
+- where(columnExpr: string, operator: string, value?: any)
+- whereIn(column: string, values: any[])
+- whereNotIn(column: string, values: any[])
+- between(column: string, value1: any, value2: any)
+- match(fields: string[] | string, value: string, escapeValue: boolean = true)
+- orMatch(fields: string[] | string, value: string, escapeValue: boolean = true)
+
+Example here:
+```javascript
+sphql.getQueryBuilder()
+  .select('id', 'author_id', 'publication_date')
+  .from('books')
+  .match('*', '"harry potter"', false)
+  .between(Expression.raw(`YEAR(publication_date)`), 2008, 2015)
+  .orderBy({'publication_date': 'ASC', 'price': 'DESC'})
+  .limit(10)
+  .option()
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
 //TODO
 
 ### INSERT
@@ -101,7 +133,7 @@ connection.getQueryBuilder()
 ```
 
 ### REPLACE
-Replaces a document using the doc id or insert. Similar to insert.
+Replaces a document using the doc id or insert. Similar to insert statement only changing INSERT for REPLACE.
 ```javascript
 const document = {
   id: 1,
