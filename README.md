@@ -75,10 +75,8 @@ sphql.getQueryBuilder()
   .select('id', 'author_id', 'publication_date')
   .from('books')
   .match('*', '"harry potter"', false)
+  .whereIn('lang', ['en', 'sp', 'fr'])
   .between(Expression.raw(`YEAR(publication_date)`), 2008, 2015)
-  .orderBy({'publication_date': 'ASC', 'price': 'DESC'})
-  .limit(10)
-  .option()
   .execute()
   .then((result, fields) => {
     console.log(result);
@@ -87,7 +85,39 @@ sphql.getQueryBuilder()
     console.log(err);
   });
 ```
-//TODO
+
+#### OPTION
+You can chain multiple options using the method "option".
+The method head is:
+
+- option(option: string, value: any)
+where value argument can be an instance of:
+- **Expression** instance for unescaped parameters
+- **key-value object** (example below)
+- **string** for simple and escaped option value.
+
+Example with OPTION:
+```javascript
+sphql.getQueryBuilder()
+  .select('id', 'author_id', 'publication_date')
+  .from('books')
+  .match('*', '"harry potter"', false)
+  .between(Expression.raw(`YEAR(publication_date)`), 2008, 2015)
+  .orderBy({'publication_date': 'ASC', 'price': 'DESC'})
+  .limit(10)
+  .option('rank_fields', 'title content')
+  .option('field_weights', {title: 100, content: 1})
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+#### Faceted search
+// TODO
 
 ### INSERT
 An INSERT statement is created like this:
@@ -214,3 +244,15 @@ const insertDocumentAndCommit = async (doc) => {
 
 insertDocumentAndCommit(document);
 ```
+
+### More query methods
+- optimizeIndex(index: string): Promise<any>
+- attachIndex(diskIndex: string): **AttachIndexStatement**(1)
+- truncate(rtIndex: string): **TruncateStatement**(2)
+
+- 1: AttachIndexStatement
+//TODO
+- 2: TruncateStatement
+//TODO
+
+### Run raw queries
