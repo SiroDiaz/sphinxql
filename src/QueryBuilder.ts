@@ -5,6 +5,7 @@ import TransactionStatement from './Statements/TransactionStatement';
 import UpdateStatement from './Statements/UpdateStatement';
 import DeleteStatement from './Statements/DeleteStatement';
 import AttachIndexStatement from './Statements/AttachIndexStatement';
+import TruncateStatement from './Statements/TruncateStatement';
 
 export default class QueryBuilder {
   // protected type: QueryType;
@@ -53,6 +54,10 @@ export default class QueryBuilder {
 
   public attachIndex(diskIndex: string): AttachIndexStatement {
     return new AttachIndexStatement(this.connection, diskIndex);
+  }
+
+  public truncate(rtIndex: string): TruncateStatement {
+    return new TruncateStatement(this.connection, rtIndex);
   }
 
   get transaction(): TransactionStatement {
