@@ -3,6 +3,12 @@ import StatementBuilderBase from '../StatementBuilderBase';
 
 export default class MatchStatement implements StatementBuilderBase {
   protected parts: object[];
+
+  /**
+   * List of characters that must be escaped for full-text search in SphinxQL:
+   * !    "    $    '    (    )    -    /    <    @    \    ^    |    ~
+   * More info at: https://docs.manticoresearch.com/latest/html/searching/escaping_in_queries.html
+   */
   protected escapeChars: object = {
     '\\': '\\\\',
     '(' : '\(',

@@ -11,6 +11,7 @@ import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
 import OptionExprStatement from './statement_expressions/OptionExprStatement';
 import FacetStatement from './FacetStatement';
+import Expression from './Expression';
 
 /**
   SELECT
@@ -36,6 +37,7 @@ export default class SelectStatement {
   protected orderByFields: OrderByExprStatement[] = [];
   protected limitExpr: LimitExprStatement;
   protected optionExprs: OptionExprStatement[] = [];
+  protected facetExprs: FacetStatement[] = [];
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
     this.connection = connection;
@@ -54,35 +56,54 @@ export default class SelectStatement {
    * @param operator
    * @param value
    */
-  public where(columnExpr: string, operator: string, value?: any): SelectStatement {
+  public where(columnExpr: string | Expression, operator: string, value?: any): SelectStatement {
     if (value === undefined) {
       value = operator;
       operator = '=';
     }
-
-    const condition = new WhereStatement(columnExpr, operator, value);
+    let condition: WhereStatement = null;
+    if (columnExpr instanceof Expression) {
+      condition = new WhereStatement(columnExpr.getExpression(), operator, value);
+    } else {
+      condition = new WhereStatement(columnExpr, operator, value);
+    }
     this.whereConditions = [...this.whereConditions, condition];
 
     return this;
   }
 
-  public whereIn(column: string, values: any[]) {
-    const condition = new WhereStatement(column, 'IN', values);
+  public whereIn(column: string | Expression, values: any[]) {
+    let condition: WhereStatement = null;
+    if (column instanceof Expression) {
+      condition = new WhereStatement(column.getExpression(), 'IN', values);
+    } else {
+      condition = new WhereStatement(column, 'IN', values);
+    }
     this.whereConditions = [...this.whereConditions, condition];
 
     return this;
   }
 
-  public whereNotIn(column: string, values: any[]) {
-    const condition = new WhereStatement(column, 'NOT IN', values);
+  public whereNotIn(column: string | Expression, values: any[]) {
+    let condition: WhereStatement = null;
+    if (column instanceof Expression) {
+      condition = new WhereStatement(column.getExpression(), 'NOT IN', values);
+    } else {
+      condition = new WhereStatement(column, 'NOT IN', values);
+    }
     this.whereConditions = [...this.whereConditions, condition];
 
     return this;
   }
 
-  public between(column: string, value1: any, value2: any) {
-    const condtion = new WhereStatement(column, 'BETWEEN', [value1, value2]);
-    this.whereConditions = [...this.whereConditions, condtion];
+  public between(column: string | Expression, value1: any, value2: any) {
+    let condition: WhereStatement = null;
+    if (column instanceof Expression) {
+      condition = new WhereStatement(column.getExpression(), 'BETWEEN', [value1, value2]);
+    } else {
+      condition = new WhereStatement(column, 'BETWEEN', [value1, value2]);
+    }
+    this.whereConditions = [...this.whereConditions, condition];
 
     return this;
   }
@@ -192,7 +213,8 @@ export default class SelectStatement {
 
   public facet(cb) {
     let values = [];
-    values = [...values, cb.apply(this, [new FacetStatement(this.connection)])];
+    values = [...this.facetExprs, cb.apply(this, [new FacetStatement(this.connection)])];
+    this.facetExprs = values;
 
     return this;
   }
@@ -245,6 +267,14 @@ export default class SelectStatement {
 
     if (this.optionExprs.length) {
       statement += ` OPTION ${this.optionExprs.map((option) => option.build()).join(',')}`;
+    }
+
+    if (this.facetExprs.length) {
+      let facetStatement: string = '';
+      facetStatement = this.facetExprs.map((facet) => {
+        return ` FACET ${facet.build()}`;
+      }).join('');
+      statement += facetStatement;
     }
 
     return statement;

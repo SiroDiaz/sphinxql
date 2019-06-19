@@ -227,4 +227,40 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
   });
+
+  it('selects with just one facet statement', () => {
+    const compiledQuery = new QueryBuilder(conn)
+      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+      .from('rt_sales')
+      .facet((f) => {
+        return f
+          .fields(['category_id'])
+          .by(['category_id'])
+      })
+      .generate();
+    const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
+
+  it('selects with just one facet statement', () => {
+    const compiledQuery = new QueryBuilder(conn)
+      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+      .from('rt_sales')
+      .facet((f) => {
+        return f
+          .fields(['category_id'])
+          .by(['category_id'])
+      })
+      .facet((f) => {
+        return f
+          .field('brand_id')
+          .orderBy(Expression.raw('facet()'))
+          .limit(5)
+      })
+      .generate();
+    const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id FACET brand_id ORDER BY facet() DESC LIMIT 5`;
+
+    expect(compiledQuery).toBe(expectedQuery);
+  });
 });
