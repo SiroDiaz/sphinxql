@@ -247,12 +247,85 @@ insertDocumentAndCommit(document);
 
 ### More query methods
 - optimizeIndex(index: string): Promise<any>
-- attachIndex(diskIndex: string): **AttachIndexStatement**(1)
-- truncate(rtIndex: string): **TruncateStatement**(2)
+- attachIndex(diskIndex: string): **AttachIndexStatement**
+- truncate(rtIndex: string): **TruncateStatement**
+- reloadIndex(index: string): **ReloadIndexStatement**
 
-- 1: AttachIndexStatement
-//TODO
-- 2: TruncateStatement
-//TODO
+#### ATTACH INDEX (AttachIndexStatement)
+Read about [ATTACH INDEX](https://docs.manticoresearch.com/latest/html/sphinxql_reference/attach_index_syntax.html) in Manticore documantation
+To use this statement see example below:
+
+```javascript
+connection.getQueryBuilder()
+  .attachIndex('my_disk_index')
+  .to('my_rt_index')
+  .withTruncate() // this method is optional
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+#### TRUNCATE RTINDEX (TruncateStatement)
+Read about [TRUNCATE RTINDEX](https://docs.manticoresearch.com/latest/html/sphinxql_reference/truncate_rtindex_syntax.html) in Manticore documantation
+To use this statement see example below:
+
+```javascript
+connection.getQueryBuilder()
+  .truncate('my_rt_index')
+  .withReconfigure()  // this method is optional
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+#### RELOAD INDEX
+Read about [RELOAD INDEX](https://docs.manticoresearch.com/latest/html/sphinxql_reference/reload_index_syntax.html) in Manticore documantation
+To use this statement see example below:
+
+```javascript
+connection.getQueryBuilder()
+  .reloadIndex('my_index')
+  .from('/home/mighty/new_index_files') // this method is optional
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
 
 ### Run raw queries
+//TODO
+
+
+## Debug queries
+All statements has a final method which is used internally to execute queries. This method is available
+outside using generate() and returns a string with the final query.
+
+```javascript
+const sphinxqlQuery = connection.getQueryBuilder()
+  .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+  .from('rt_sales')
+  .facet((f) => {
+    return f
+      .fields(['category_id'])
+      .by(['category_id'])
+  })
+  .facet((f) => {
+    return f
+      .field('brand_id')
+      .orderBy(Expression.raw('facet()'))
+      .limit(5)
+  })
+  .generate();
+
+console.log(sphinxqlQuery); // SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id FACET brand_id ORDER BY facet() DESC LIMIT 5
+```
