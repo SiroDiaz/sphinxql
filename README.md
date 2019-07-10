@@ -245,7 +245,7 @@ const insertDocumentAndCommit = async (doc) => {
 insertDocumentAndCommit(document);
 ```
 
-### More query methods
+### More SphinxQL methods
 - optimizeIndex(index: string): Promise<any>
 - attachIndex(diskIndex: string): **AttachIndexStatement**
 - truncate(rtIndex: string): **TruncateStatement**
