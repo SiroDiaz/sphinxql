@@ -4,17 +4,17 @@
   "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
   "main": "dist/index.js",
   "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "@types/node": "^12.0.2",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.6.2",
     "jest": "^24.8.0",
-    "prettier": "1.17.1",
+    "prettier": "1.18.2",
     "rimraf": "^2.6.3",
     "ts-jest": "~24.0.2",
-    "tslint": "~5.16.0",
+    "tslint": "~5.18.0",
     "tslint-config-prettier": "1.18.0",
-    "tslint-microsoft-contrib": "~6.1.1",
-    "tsutils": "~3.10.0",
-    "typescript": "^3.4.5"
+    "tslint-microsoft-contrib": "~6.2.0",
+    "tsutils": "~3.14.0",
+    "typescript": "^3.5.3"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
@@ -32,6 +32,6 @@
     "es7-object-polyfill": "^1.0.0",
     "mysql2": "^1.6.5",
     "sqlstring": "^2.3.1",
-    "tslib": "~1.9.3"
+    "tslib": "~1.10.0"
   }
 }
