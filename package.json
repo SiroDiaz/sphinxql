@@ -2,7 +2,7 @@
   "name": "sphinxql",
   "version": "0.0.1",
   "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
-  "main": "dist/index.js",
+  "main": "build/src/index.js",
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "@types/node": "^12.6.2",
