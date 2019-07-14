@@ -7,6 +7,7 @@ import DeleteStatement from './Statements/DeleteStatement';
 import AttachIndexStatement from './Statements/AttachIndexStatement';
 import TruncateStatement from './Statements/TruncateStatement';
 import ReloadIndexStatement from './Statements/ReloadIndexStatement';
+import OptimizeIndexStatement from './Statements/OptimizeIndexStatement';
 
 export default class QueryBuilder {
   // protected type: QueryType;
@@ -49,8 +50,8 @@ export default class QueryBuilder {
     return new DeleteStatement(this.connection, index);
   }
 
-  public optimizeIndex(index: string): Promise<any> {
-    return this.connection.query(`OPTIMIZE INDEX ${index}`);
+  public optimizeIndex(index: string): OptimizeIndexStatement {
+    return new OptimizeIndexStatement(this.connection, index);
   }
 
   public attachIndex(diskIndex: string): AttachIndexStatement {
