@@ -30,7 +30,7 @@ To create a simple connection (not the most recommended, use a pool connection)
 and write your first query, just do this:
 
 ```javascript
-const sphinxql = require('sphinxql');
+const { Sphinxql, Expression } = require('sphinxql');
 
 const sphql = sphinxql.createConnection({
   host: 'localhost',
