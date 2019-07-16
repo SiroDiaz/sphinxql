@@ -15,7 +15,7 @@ in performance.
 
 ## requirements
 
-TODO
+You must use Node.JS >= 6.x
 
 ## install
 
