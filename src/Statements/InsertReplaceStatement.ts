@@ -1,17 +1,18 @@
 import { format } from 'sqlstring';
 import ClientInterface from '../ClientInterface';
+import BaseStatement from './BaseStatement';
 
 /**
  * INSERT INTO rtindex VALUES (val1, val2, ...), (val1, val2, ...);
  */
 
-export default class InsertStatement {
-  protected connection: ClientInterface;
+export default class InsertStatement extends BaseStatement {
   protected index: string;
   protected values: any;
   protected type: string;
 
   constructor(connection: ClientInterface, index: string, values: any, insertType: string = 'INSERT') {
+    super(connection);
     if (!index.length) {
       throw Error('real-time index must be valid but empty name provided');
     }
@@ -71,10 +72,6 @@ export default class InsertStatement {
 
     return `${this.type} INTO ${this.index} ${this.renderColumnList(columns)} ` +
       `VALUES ${this.renderValues(this.values, columns)}`;
-  }
-
-  public execute() {
-    return this.connection.execute(this.generate(), []);
   }
 
   /**

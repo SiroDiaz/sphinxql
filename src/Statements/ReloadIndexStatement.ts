@@ -1,12 +1,15 @@
 import ClientInterface from '../ClientInterface';
+import BaseStatement from './BaseStatement';
 
 /**
  * RELOAD INDEX idx [ FROM '/path/to/index_files' ]
  */
-export default class ReloadIndexStatement {
+export default class ReloadIndexStatement extends BaseStatement {
   protected path: string;
 
-  public constructor(protected connection: ClientInterface, protected index: string) {}
+  public constructor(connection: ClientInterface, protected index: string) {
+    super(connection);
+  }
 
   /**
    * Specifies the path of the index file. This is an option method.
@@ -27,12 +30,5 @@ export default class ReloadIndexStatement {
     }
     
     return expression;
-  }
-
-  /**
-   * Run the query and returns a promise that can be accepted or rejected.
-   */
-  execute(): Promise<any> {
-    return this.connection.execute(this.generate(), []);
   }
 }

@@ -1,13 +1,16 @@
 import ClientInterface from '../ClientInterface';
+import BaseStatement from './BaseStatement';
 
 /**
  * ATTACH INDEX diskindex TO RTINDEX rtindex [WITH TRUNCATE]
  */
-export default class AttachIndexStatement {
+export default class AttachIndexStatement extends BaseStatement {
   protected rtIndex: string;
   protected truncate: boolean = false;
 
-  public constructor(protected connection: ClientInterface, protected diskIndex: string) {}
+  public constructor(connection: ClientInterface, protected diskIndex: string) {
+    super(connection);
+  }
 
   /**
    * The target real-time index to attach the disk index
@@ -38,12 +41,5 @@ export default class AttachIndexStatement {
     }
     
     return expression;
-  }
-
-  /**
-   * Run the query and returns a promise that can be accepted or rejected.
-   */
-  execute(): Promise<any> {
-    return this.connection.execute(this.generate(), []);
   }
 }

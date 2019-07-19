@@ -5,11 +5,12 @@ import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
 import OptionExprStatement from './statement_expressions/OptionExprStatement';
 import * as utils from '../utils';
+import BaseStatement from './BaseStatement';
 
 /**
   UPDATE index SET col1 = newval1 [, ...] WHERE where_condition [OPTION opt_name = opt_value [, ...]]
  */
-export default class UpdateStatement {
+export default class UpdateStatement extends BaseStatement {
   protected connection: ClientInterface;
   protected index: string;
   protected setParams: object = {};
@@ -18,7 +19,7 @@ export default class UpdateStatement {
   protected optionExprs: OptionExprStatement[] = [];
 
   public constructor(connection: ClientInterface, index: string) {
-    this.connection = connection;
+    super(connection);
     this.index = index;
   }
 
@@ -140,9 +141,5 @@ export default class UpdateStatement {
     return Object.entries(this.setParams).map(([key, value, ]) => {
       return `${key}=${utils.getExpressionCompare(value)}`;
     }).join(', ');
-  }
-
-  public execute() {
-    return this.connection.execute(this.generate(), []);
   }
 }

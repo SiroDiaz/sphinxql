@@ -1,12 +1,15 @@
 import ClientInterface from '../ClientInterface';
+import BaseStatement from './BaseStatement';
 
 /**
  * TRUNCATE RTINDEX rtindex [WITH RECONFIGURE]
  */
-export default class TruncateStatement {
+export default class TruncateStatement extends BaseStatement {
   protected reconfigure: boolean = false;
 
-  public constructor(protected connection: ClientInterface, protected rtIndex: string) {}
+  public constructor(connection: ClientInterface, protected rtIndex: string) {
+    super(connection);
+  }
 
   /**
    * When RECONFIGURE option is used new tokenization, morphology,
@@ -28,12 +31,5 @@ export default class TruncateStatement {
     }
     
     return expression;
-  }
-
-  /**
-   * Run the query and returns a promise that can be accepted or rejected.
-   */
-  execute(): Promise<any> {
-    return this.connection.execute(this.generate(), []);
   }
 }

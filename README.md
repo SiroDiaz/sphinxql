@@ -32,7 +32,7 @@ and write your first query, just do this:
 ```javascript
 const { Sphinxql, Expression } = require('sphinxql');
 
-const sphql = sphinxql.createConnection({
+const sphql = Sphinxql.createConnection({
   host: 'localhost',
   port: 9306
 });

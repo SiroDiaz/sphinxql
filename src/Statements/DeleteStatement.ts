@@ -2,18 +2,18 @@ import MatchExprStatement from './statement_expressions/MatchStatement';
 import ClientInterface from '../ClientInterface';
 import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
+import BaseStatement from './BaseStatement';
 
 /**
  * DELETE FROM index WHERE where_condition
  */
-export default class DeleteStatement {
-  protected connection: ClientInterface;
+export default class DeleteStatement extends BaseStatement {
   protected index: string;
   protected matchStatement: MatchExprStatement = new MatchExprStatement();
   protected whereConditions: WhereStatement[] = [];
   
   public constructor(connection: ClientInterface, index: string) {
-    this.connection = connection;
+    super(connection);
     this.index = index;
   }
 
@@ -104,9 +104,5 @@ export default class DeleteStatement {
     }
 
     return statement;
-  }
-
-  public execute() {
-    return this.connection.execute(this.generate(), []);
   }
 }

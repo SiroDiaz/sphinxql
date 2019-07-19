@@ -12,6 +12,7 @@ import StatementBuilderBase from './StatementBuilderBase';
 import OptionExprStatement from './statement_expressions/OptionExprStatement';
 import FacetStatement from './FacetStatement';
 import Expression from './Expression';
+import BaseStatement from './BaseStatement';
 
 /**
   SELECT
@@ -26,8 +27,7 @@ import Expression from './Expression';
     [OPTION opt_name = opt_value [, ...]]
     [FACET facet_options[ FACET facet_options][ ...]]
  */
-export default class SelectStatement {
-  protected connection: ClientInterface;
+export default class SelectStatement extends BaseStatement {
   protected select: SelectExprStatement;
   protected fromIndexes: FromExprStatement;
   protected matchStatement: MatchExprStatement = new MatchExprStatement();
@@ -40,7 +40,7 @@ export default class SelectStatement {
   protected facetExprs: FacetStatement[] = [];
 
   public constructor(connection: ClientInterface, ...fields: string[]) {
-    this.connection = connection;
+    super(connection);
     this.select = new SelectExprStatement(...fields);
   }
 
@@ -278,9 +278,5 @@ export default class SelectStatement {
     }
 
     return statement;
-  }
-
-  public execute() {
-    return this.connection.execute(this.generate(), []);
   }
 }

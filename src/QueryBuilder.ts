@@ -10,7 +10,6 @@ import ReloadIndexStatement from './Statements/ReloadIndexStatement';
 import OptimizeIndexStatement from './Statements/OptimizeIndexStatement';
 
 export default class QueryBuilder {
-  // protected type: QueryType;
   protected connection: ClientInterface;
 
   constructor(connection: ClientInterface) {
@@ -18,7 +17,8 @@ export default class QueryBuilder {
   }
 
   /**
-   *
+   * Run raw queries and passes an array (optional) of parameters.
+   * Returns a promise with the result in mysql2 connector return the format
    * @param q
    * @param values
    */

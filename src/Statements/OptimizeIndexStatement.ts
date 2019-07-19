@@ -1,22 +1,18 @@
 import ClientInterface from '../ClientInterface';
+import BaseStatement from './BaseStatement';
 
 /**
  * RELOAD INDEX idx [ FROM '/path/to/index_files' ]
  */
-export default class OptimizeIndexStatement {
-  public constructor(protected connection: ClientInterface, protected index: string) {}
+export default class OptimizeIndexStatement extends BaseStatement {
+  public constructor(connection: ClientInterface, protected index: string) {
+    super(connection);
+  }
 
   /**
    * Generates the string statement.
    */
   generate(): string {
     return `OPTIMIZE INDEX ${this.index}`;
-  }
-
-  /**
-   * Run the query and returns a promise that can be accepted or rejected.
-   */
-  execute(): Promise<any> {
-    return this.connection.execute(this.generate(), []);
   }
 }
