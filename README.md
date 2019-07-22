@@ -303,8 +303,19 @@ connection.getQueryBuilder()
 ```
 
 ### Run raw queries
-//TODO
+Run raw queries using the query method that is available after call getQueryBuilder method.
+This method allows prepared statement using a ? (question mark) where you want to escape the value.
 
+```javascript
+connection.getQueryBuilder()
+  .query(`SELECT * FROM sales WHERE MATCH(@title "italian lamp") AND tags IN (?, ?)`, ['home', 'italian style'])
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
 
 ## Debug queries
 All statements has a final method which is used internally to execute queries. This method is available
