@@ -245,6 +245,59 @@ const insertDocumentAndCommit = async (doc) => {
 insertDocumentAndCommit(document);
 ```
 
+### Batch queries (multi queries)
+First of all you need to know the limitations of multi queries in Manticore/Sphinx.
+As Manticore Search and Sphinx documentation said there is only
+support for the following statements used in a batch:
+ - SELECT
+ - SHOW WARNINGS
+ - SHOW STATUS
+ - SHOW META
+
+Said this, now is the moment to write code.
+There is a class, **Queue**, that implements just the necessary methods, it is usefull to run
+multi queries.
+To enable multi statements you must specify in your configuration object for the connection
+creation the **multipleStatements: true** as follow:
+
+```javascript
+const { Sphinxql } = require('sphinxql');
+
+const sphql = Sphinxql.createConnection({
+  host: 'localhost',
+  port: 9306,
+  multipleStatements: true
+});
+```
+
+Now let's create a queue and process it:
+
+```javascript
+const { Queue, Sphinxql } = require('sphinxql');
+
+const sphql = Sphinxql.createConnection({
+  host: 'localhost',
+  port: 9306,
+  multipleStatements: true
+});
+
+const queue = new Queue(sphql.getConnection());
+queue
+  .push(sphql.getQueryBuilder().select('*').from('rt').where('id', '=', 1))
+  .push(
+    sphql.getQueryBuilder()
+      .select('id', 'author_id', 'publication_date')
+      .from('books')
+      .match('*', '"harry potter"', false)
+  );
+
+queue.process()
+  .then(results => {
+    console.log(results.results.length) // 2
+  })
+  .catch(err => console.log(err));
+```
+
 ### More SphinxQL methods
 - optimizeIndex(index: string): Promise<any>
 - attachIndex(diskIndex: string): **AttachIndexStatement**

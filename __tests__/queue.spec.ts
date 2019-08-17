@@ -7,7 +7,6 @@ describe('Tests for Queue class', () => {
   const sphql = Sphinxql.createConnection({
     host: 'localhost',
     port: 9307,
-    multipleStatements: true,
   });
 
   afterAll(() => {
