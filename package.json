@@ -24,17 +24,17 @@
   },
   "main": "build/src/index.js",
   "devDependencies": {
-    "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.2",
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.11.1",
     "jest": "^24.9.0",
     "prettier": "1.18.2",
     "rimraf": "^3.0.0",
-    "ts-jest": "~24.0.2",
-    "tslint": "~5.18.0",
+    "ts-jest": "~24.1.0",
+    "tslint": "~5.20.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "~6.2.0",
     "tsutils": "~3.17.1",
-    "typescript": "^3.5.3"
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
@@ -49,10 +49,10 @@
   "author": "Siro Diaz <sirodiaz93@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "es7-object-polyfill": "^1.0.0",
+    "es7-object-polyfill": "^1.0.1",
     "mysql2": "^1.6.5",
     "sqlstring": "^2.3.1",
     "tslib": "~1.10.0",
-    "yallist": "^3.0.3"
+    "yallist": "^4.0.0"
   }
 }
