@@ -16,7 +16,7 @@ describe('Tests for select queries', () => {
   })
 
   it('should create a simple select query selecting all fields from rt index', () => {
-    
+
     const compiledQuery = new QueryBuilder(conn)
       .select('*')
       .from('rt')
@@ -261,6 +261,17 @@ describe('Tests for select queries', () => {
       .generate();
     const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id FACET brand_id ORDER BY facet() DESC LIMIT 5`;
 
+    expect(compiledQuery).toBe(expectedQuery);
+  });
+
+  it('select with subselect', () => {
+    const qb1 = new QueryBuilder(conn);
+    const compiledQuery = new QueryBuilder(conn)
+      .select('*')
+      .from('rt_sales', qb1.select('product_name').from('rt_products').where('tag_id', '=', 1))
+      .generate();
+
+    const expectedQuery = `SELECT * FROM rt_sales, (SELECT product_name FROM rt_products WHERE tag_id = 1)`;
     expect(compiledQuery).toBe(expectedQuery);
   });
 });
