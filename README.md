@@ -54,6 +54,36 @@ sphql.getQueryBuilder()
   });
 ```
 
+### Establish Connection
+There are two possible ways of creating a connection between your application and the Manticore/Sphinx server.
+First and simplest is using the `createConnection` method.
+
+```javascript
+const { Sphinxql } = require('sphinxql');
+
+const sphql = Sphinxql.createConnection({
+  host: 'localhost',
+  port: 9306
+});
+```
+
+The second option is using `createPoolConnection` method. This methodology allows you to have multiple open connections
+with Manticore/Sphinx reusing previous connections. To learn more about mysql2 connection pools (allowed parameters for
+the creation and configuration of the pool) read [mysql2 documentation about using connection pools](https://www.npmjs.com/package/mysql2#using-connection-pools).
+This technique uses more memory so be aware.
+
+```javascript
+const { Sphinxql } = require('sphinxql');
+// Create the connection pool. The pool-specific settings are the defaults
+const sphql = Sphinxql.createPoolConnection({
+  host: 'localhost',
+  port: 9306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+```
+
 ### SELECT
 
 This section is separated in many parts but if you have used SphinxQL before or SQL you can
