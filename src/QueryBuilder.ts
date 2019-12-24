@@ -1,4 +1,5 @@
 import ClientInterface from './ClientInterface';
+import FlushRTIndexStatement from './Statements/FlushRTIndexStatement';
 import InsertStatement from './Statements/InsertReplaceStatement';
 import SelectStatement from './Statements/SelectStatement';
 import TransactionStatement from './Statements/TransactionStatement';
@@ -56,6 +57,10 @@ export default class QueryBuilder {
 
   public attachIndex(diskIndex: string): AttachIndexStatement {
     return new AttachIndexStatement(this.connection, diskIndex);
+  }
+
+  public flushRTIndex(index: string): FlushRTIndexStatement {
+    return new FlushRTIndexStatement(this.connection, index);
   }
 
   public truncate(rtIndex: string): TruncateStatement {

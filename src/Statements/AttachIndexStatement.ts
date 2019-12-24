@@ -28,6 +28,7 @@ export default class AttachIndexStatement extends BaseStatement {
    */
   public withTruncate(): AttachIndexStatement {
     this.truncate = true;
+
     return this;
   }
 
@@ -39,7 +40,7 @@ export default class AttachIndexStatement extends BaseStatement {
     if (this.truncate) {
       expression += ` WITH TRUNCATE`;
     }
-    
+
     return expression;
   }
 }

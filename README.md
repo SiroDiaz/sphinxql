@@ -352,6 +352,22 @@ connection.getQueryBuilder()
   });
 ```
 
+#### FLUSH RTINDEX (FlushRTIndexStatement)
+Read about [FLUSH RTINDEX](https://docs.manticoresearch.com/latest/html/sphinxql_reference/flush_rtindex_syntax.html)
+To use this statement see example below):
+
+```javascript
+connection.getQueryBuilder()
+  .flushRTIndex('my_rt_index')
+  .execute()
+  .then((result, fields) => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
 #### TRUNCATE RTINDEX (TruncateStatement)
 Read about [TRUNCATE RTINDEX](https://docs.manticoresearch.com/latest/html/sphinxql_reference/truncate_rtindex_syntax.html) in Manticore documantation
 To use this statement see example below:
