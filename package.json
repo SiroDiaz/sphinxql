@@ -1,6 +1,6 @@
 {
   "name": "sphinxql",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
   "keywords": [
     "sphinxsearch",
