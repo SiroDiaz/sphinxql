@@ -45,21 +45,8 @@ export default class InsertStatement extends BaseStatement {
       }
     }
     const compiledTemplate = template(tmpl, values);
-    return `(${compiledTemplate})`;
-    /*
-    const template: string = '?'.repeat(columns.length)
-      .split('')
-      .join(', ');
-    console.log(template);
-    // iterate through the columns array and format the values parenthesis
-    let compiledTemplate: string = template;
 
-    // tslint:disable-next-line:no-increment-decrement
-    for (let i = 0; i < columns.length; i++) {
-      compiledTemplate = compiledTemplate.replace('?', format('?', values[columns[i]]));
-    }
     return `(${compiledTemplate})`;
-    */
   }
 
   public generate() : string {
