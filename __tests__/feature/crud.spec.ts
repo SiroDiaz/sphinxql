@@ -29,13 +29,13 @@ describe('Tests for select queries', () => {
 
   afterAll(() => {
     conn.close();
-  })
+  });
 
   test('inserts two documents into an index', async () => {
     try {
       const qb = new QueryBuilder(conn);
       await qb.transaction.begin();
-      let results = await qb.insert('rt', documents).execute();
+      const results = await qb.insert('rt', documents).execute();
 
       expect(results.results.affectedRows).toBe(documents.length);
 
@@ -54,7 +54,7 @@ describe('Tests for select queries', () => {
         .from('rt')
         .where('id', '=', 1)
         .execute();
-        
+
       expect(results.results).toHaveLength(1);
 
       results = await qb.delete('rt').where('1', '=', 1).execute();
@@ -74,7 +74,7 @@ describe('Tests for select queries', () => {
         .match('title', 'message')
         .option('ranker', 'sph04')
         .execute();
-        
+
       expect(results.results).toHaveLength(2);
 
       results = await qb.delete('rt').where('1', '=', 1).execute();
@@ -94,7 +94,7 @@ describe('Tests for select queries', () => {
         .match('title', 'message')
         .option('ranker', 'sph04')
         .execute();
-      
+
       expect(results.results.affectedRows).toBe(documents.length);
 
       results = await qb.delete('rt').where('1', '=', 1).execute();
@@ -117,7 +117,7 @@ describe('Tests for select queries', () => {
 
       let results = await qb.replace('rt', newDocument).execute();
       results = await qb.select('gid').from('rt').where('id', '=', 1).execute();
-      
+
       expect(results.results).toHaveLength(1);
       expect(results.results[0].gid).toBe(2);
 

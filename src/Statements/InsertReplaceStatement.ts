@@ -1,6 +1,7 @@
-import { format } from 'sqlstring';
+import { escape } from 'sqlstring';
 import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
+const template = require('es6-template-strings');
 
 /**
  * INSERT INTO rtindex VALUES (val1, val2, ...), (val1, val2, ...);
@@ -37,19 +38,28 @@ export default class InsertStatement extends BaseStatement {
    * {id: 1, title: 'title...'}
    */
   protected renderValues(values: object, columns: string[]): string {
+    let tmpl: string = columns.map(column => '${'+ column +'}').join(', ');
+    for (let i = 0; i < columns.length; i++) {
+      if (typeof values[columns[i]] === 'string') {
+        values[columns[i]] = escape(values[columns[i]]);
+      }
+    }
+    const compiledTemplate = template(tmpl, values);
+    return `(${compiledTemplate})`;
+    /*
     const template: string = '?'.repeat(columns.length)
       .split('')
       .join(', ');
-
+    console.log(template);
     // iterate through the columns array and format the values parenthesis
-    let expression: string = '(';
     let compiledTemplate: string = template;
 
     // tslint:disable-next-line:no-increment-decrement
     for (let i = 0; i < columns.length; i++) {
       compiledTemplate = compiledTemplate.replace('?', format('?', values[columns[i]]));
     }
-    return `${expression}${compiledTemplate})`;
+    return `(${compiledTemplate})`;
+    */
   }
 
   public generate() : string {
@@ -77,7 +87,7 @@ export default class InsertStatement extends BaseStatement {
   /**
    * Compiles the list of columns to insert in the correct order
    * the document/s. It goes before VALUES keyword.
-   * 
+   *
    * Example output: (id, title, content)
    */
   protected renderColumnList(columns: string[]) : string {

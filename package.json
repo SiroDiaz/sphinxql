@@ -49,6 +49,7 @@
   "author": "Siro Diaz <sirodiaz93@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "es6-template-strings": "^2.0.1",
     "es7-object-polyfill": "^1.0.1",
     "mysql2": "^1.6.5",
     "sqlstring": "^2.3.1",
