@@ -1,4 +1,3 @@
-import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
 
 /**
@@ -6,10 +5,10 @@ import BaseStatement from './BaseStatement';
  */
 export default class AttachIndexStatement extends BaseStatement {
   protected rtIndex: string;
-  protected truncate: boolean = false;
+  protected truncate = false;
 
-  public constructor(connection: ClientInterface, protected diskIndex: string) {
-    super(connection);
+  public constructor(protected diskIndex: string) {
+    super();
   }
 
   /**
@@ -36,7 +35,7 @@ export default class AttachIndexStatement extends BaseStatement {
    * Generates the string statement.
    */
   generate(): string {
-    let expression: string = `ATTACH INDEX ${this.diskIndex} TO RTINDEX ${this.rtIndex}`;
+    let expression = `ATTACH INDEX ${this.diskIndex} TO RTINDEX ${this.rtIndex}`;
     if (this.truncate) {
       expression += ` WITH TRUNCATE`;
     }

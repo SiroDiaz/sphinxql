@@ -1,33 +1,16 @@
-import QueryBuilder from '../../src/QueryBuilder';
-import SphinxClient from '../../src/SphinxClient';
+import sphinxql from '../../src/Sphinxql';
 import Expression from '../../src/Statements/Expression';
-require('iconv-lite').encodingExists('foo');  // fix bug with mysql2 and Jest
 
 describe('Tests for select queries', () => {
-  const params = {
-    host: '127.0.0.1',
-    port: 9307,
-  };
-
-  const conn = new SphinxClient(params);
-
-  afterAll(() => {
-    conn.close();
-  })
-
   it('should create a simple select query selecting all fields from rt index', () => {
-
-    const compiledQuery = new QueryBuilder(conn)
-      .select('*')
-      .from('rt')
-      .generate();
+    const compiledQuery = sphinxql().select('*').from('rt').generate();
     const expectedQuery = `SELECT * FROM rt`;
 
     expect(compiledQuery).toBe(expectedQuery);
   });
 
   it('selects just two fields from rt with a simple where condition', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('id')
       .from('rt')
       .where('category', 'IN', [1, 2, 3])
@@ -38,10 +21,10 @@ describe('Tests for select queries', () => {
   });
 
   it('selects the id from rt in descending order', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('id')
       .from('rt')
-      .orderBy({'id': 'DESC'})
+      .orderBy({ id: 'DESC' })
       .generate();
     const expectedQuery = `SELECT id FROM rt ORDER BY id DESC`;
 
@@ -49,10 +32,10 @@ describe('Tests for select queries', () => {
   });
 
   it('selects the id from rt ordered by published date in ascending order and from expensive to cheapest', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('id')
       .from('rt')
-      .orderBy({'date_published': 'ASC', 'price': 'DESC'})
+      .orderBy({ date_published: 'ASC', price: 'DESC' })
       .generate();
     const expectedQuery = `SELECT id FROM rt ORDER BY date_published ASC, price DESC`;
 
@@ -60,7 +43,7 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with WHERE conditions', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('*')
       .from('rt')
       .where('id', '>', 1000)
@@ -72,7 +55,7 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with WHERE and HAVING conditions', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('*')
       .from('rt')
       .where('id', '>', 1000)
@@ -85,7 +68,7 @@ describe('Tests for select queries', () => {
   });
 
   it('selects a raw expression with an alias name', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select(Expression.raw('COUNT(*) as total').getExpression())
       .from('rt')
       .generate();
@@ -95,7 +78,7 @@ describe('Tests for select queries', () => {
   });
 
   it('selects a raw expression with an alias name and a single column in group by', () => {
-    const compiledQuery = new QueryBuilder(conn)
+    const compiledQuery = sphinxql()
       .select('user_id', Expression.raw('COUNT(*) as total').getExpression())
       .from('rt_sales')
       .groupBy(['user_id'])
@@ -107,8 +90,12 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with more than one column in group by', () => {
-    const compiledQuery = new QueryBuilder(conn)
-      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+    const compiledQuery = sphinxql()
+      .select(
+        'user_id',
+        'product_id',
+        Expression.raw('SUM(product_price) as total').getExpression(),
+      )
       .from('rt_sales')
       .groupBy(['user_id', 'product_id'])
       .generate();
@@ -118,7 +105,7 @@ describe('Tests for select queries', () => {
   });
 
   it('selects id using MATCH in a WHERE condition', () => {
-    let compiledQuery = new QueryBuilder(conn)
+    let compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"', false)
@@ -127,7 +114,7 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"', false)
@@ -137,19 +124,19 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"')
       .orMatch('*', '"iphone apple"~4', false)
       .generate();
-    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)')`;
+    expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS") | (@* "iphone apple"~4)')`;
 
     expect(compiledQuery).toBe(expectedQuery);
   });
 
   it('selects id and use limit and offset methods', () => {
-    let compiledQuery = new QueryBuilder(conn)
+    let compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .limit(10)
@@ -158,7 +145,7 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .offset(10)
@@ -167,7 +154,7 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .offset()
@@ -179,7 +166,7 @@ describe('Tests for select queries', () => {
   });
 
   it('uses OPTION expression for customizing the search', () => {
-    let compiledQuery = new QueryBuilder(conn)
+    let compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"', false)
@@ -189,39 +176,39 @@ describe('Tests for select queries', () => {
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"', false)
       .orMatch('*', '"iphone apple"~4', false)
       .option('ranker', Expression.raw('sph04'))
-      .option('field_weights', {product_name: 100})
+      .option('field_weights', { product_name: 100 })
       .generate();
     expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name "iPhone XS") | (@* "iphone apple"~4)') OPTION ranker=sph04,field_weights=(product_name=100)`;
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"')
       .orMatch('*', '"iphone apple"~4', false)
       .limit(5)
       .option('ranker', Expression.raw('sph04'))
-      .option('field_weights', {product_name: 100})
+      .option('field_weights', { product_name: 100 })
       .generate();
     expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)') LIMIT 5 OPTION ranker=sph04,field_weights=(product_name=100)`;
 
     expect(compiledQuery).toBe(expectedQuery);
 
-    compiledQuery = new QueryBuilder(conn)
+    compiledQuery = sphinxql()
       .select('id')
       .from('rt_sales')
       .match('product_name', '"iPhone XS"')
       .orMatch('*', '"iphone apple"~4', false)
       .limit(5)
       .option('ranker', Expression.raw('sph04'))
-      .option('field_weights', {product_name: 100, other: 1})
+      .option('field_weights', { product_name: 100, other: 1 })
       .generate();
     expectedQuery = `SELECT id FROM rt_sales WHERE MATCH('(@product_name \"iPhone XS\") | (@* "iphone apple"~4)') LIMIT 5 OPTION ranker=sph04,field_weights=(product_name=100,other=1)`;
 
@@ -229,13 +216,15 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with just one facet statement', () => {
-    const compiledQuery = new QueryBuilder(conn)
-      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+    const compiledQuery = sphinxql()
+      .select(
+        'user_id',
+        'product_id',
+        Expression.raw('SUM(product_price) as total').getExpression(),
+      )
       .from('rt_sales')
       .facet((f) => {
-        return f
-          .fields(['category_id'])
-          .by(['category_id'])
+        return f.fields(['category_id']).by(['category_id']);
       })
       .generate();
     const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id`;
@@ -244,19 +233,18 @@ describe('Tests for select queries', () => {
   });
 
   it('selects with just one facet statement', () => {
-    const compiledQuery = new QueryBuilder(conn)
-      .select('user_id', 'product_id', Expression.raw('SUM(product_price) as total').getExpression())
+    const compiledQuery = sphinxql()
+      .select(
+        'user_id',
+        'product_id',
+        Expression.raw('SUM(product_price) as total').getExpression(),
+      )
       .from('rt_sales')
       .facet((f) => {
-        return f
-          .fields(['category_id'])
-          .by(['category_id'])
+        return f.fields(['category_id']).by(['category_id']);
       })
       .facet((f) => {
-        return f
-          .field('brand_id')
-          .orderBy(Expression.raw('facet()'))
-          .limit(5)
+        return f.field('brand_id').orderBy(Expression.raw('facet()')).limit(5);
       })
       .generate();
     const expectedQuery = `SELECT user_id, product_id, SUM(product_price) as total FROM rt_sales FACET category_id BY category_id FACET brand_id ORDER BY facet() DESC LIMIT 5`;
@@ -265,10 +253,13 @@ describe('Tests for select queries', () => {
   });
 
   it('select with subselect', () => {
-    const qb1 = new QueryBuilder(conn);
-    const compiledQuery = new QueryBuilder(conn)
+    const qb1 = sphinxql();
+    const compiledQuery = sphinxql()
       .select('*')
-      .from('rt_sales', qb1.select('product_name').from('rt_products').where('tag_id', '=', 1))
+      .from(
+        'rt_sales',
+        qb1.select('product_name').from('rt_products').where('tag_id', '=', 1),
+      )
       .generate();
 
     const expectedQuery = `SELECT * FROM rt_sales, (SELECT product_name FROM rt_products WHERE tag_id = 1)`;

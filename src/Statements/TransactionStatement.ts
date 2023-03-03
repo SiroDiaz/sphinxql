@@ -1,33 +1,24 @@
-import ClientInterface from '../ClientInterface';
 
 export default class TransactionStatement {
-  constructor(protected connection: ClientInterface) {}
-
-  /**
-   * Executes a COMMIT query and returns a promise.
-   */
-  public begin(): Promise<any> {
-    return this.connection.query('BEGIN');
+  public begin(): string {
+    return 'BEGIN';
   }
 
-  /**
-   * Same than run begin method.
-   */
-  public start(): Promise<any> {
-    return this.connection.query('START TRANSACTION');
+  public start(): string {
+    return 'START TRANSACTION';
   }
 
   /**
    * Executes a COMMIT query and returns a promise.
    */
-  public commit(): Promise<any> {
-    return this.connection.query('COMMIT');
+  public commit(): string {
+    return 'COMMIT';
   }
 
   /**
    * Executes a ROLLBACK query and returns a promise.
    */
-  public rollback(): Promise<any> {
-    return this.connection.query('ROLLBACK');
+  public rollback(): string {
+    return 'ROLLBACK';
   }
 }

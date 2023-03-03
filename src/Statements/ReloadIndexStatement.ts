@@ -1,4 +1,3 @@
-import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
 
 /**
@@ -7,8 +6,8 @@ import BaseStatement from './BaseStatement';
 export default class ReloadIndexStatement extends BaseStatement {
   protected path: string;
 
-  public constructor(connection: ClientInterface, protected index: string) {
-    super(connection);
+  public constructor(protected index: string) {
+    super();
   }
 
   /**
@@ -24,11 +23,11 @@ export default class ReloadIndexStatement extends BaseStatement {
    * Generates the string statement.
    */
   generate(): string {
-    let expression: string = `RELOAD INDEX ${this.index}`;
+    let expression = `RELOAD INDEX ${this.index}`;
     if (this.path !== undefined) {
       expression += ` FROM '${this.path}'`;
     }
-    
+
     return expression;
   }
 }

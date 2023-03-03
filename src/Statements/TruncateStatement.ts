@@ -1,14 +1,13 @@
-import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
 
 /**
  * TRUNCATE RTINDEX rtindex [WITH RECONFIGURE]
  */
 export default class TruncateStatement extends BaseStatement {
-  protected reconfigure: boolean = false;
+  protected reconfigure = false;
 
-  public constructor(connection: ClientInterface, protected rtIndex: string) {
-    super(connection);
+  public constructor(protected rtIndex: string) {
+    super();
   }
 
   /**
@@ -25,11 +24,11 @@ export default class TruncateStatement extends BaseStatement {
    * Generates the string statement.
    */
   generate(): string {
-    let expression: string = `TRUNCATE RTINDEX ${this.rtIndex}`;
+    let expression = `TRUNCATE RTINDEX ${this.rtIndex}`;
     if (this.reconfigure) {
       expression += ` WITH RECONFIGURE`;
     }
-    
+
     return expression;
   }
 }

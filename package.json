@@ -1,7 +1,15 @@
 {
   "name": "sphinxql",
-  "version": "0.3.0",
-  "description": "SphinxQL query builder for Node.JS. Supports Sphinx search(2.x and 3.x) and Manticore search",
+  "version": "1.0.0",
+  "description": "SphinxQL query builder for Node.JS. Supports ManticoreSearch and SphinxSearch",
+  "author": "Siro Diaz <sirodiaz93@gmail.com>",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SiroDiaz/sphinxql.git"
+  },
   "keywords": [
     "sphinxsearch",
     "manticoresearch",
@@ -16,25 +24,7 @@
     "search"
   ],
   "engines": {
-    "node": ">= 6.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SiroDiaz/sphinxql.git"
-  },
-  "main": "build/src/index.js",
-  "devDependencies": {
-    "@types/jest": "^24.0.19",
-    "@types/node": "^12.11.1",
-    "jest": "^24.9.0",
-    "prettier": "1.18.2",
-    "rimraf": "^3.0.0",
-    "ts-jest": "~24.1.0",
-    "tslint": "~5.20.0",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-microsoft-contrib": "~6.2.0",
-    "tsutils": "~3.17.1",
-    "typescript": "^3.6.4"
+    "node": ">= 12.0.0"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
@@ -42,18 +32,26 @@
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --coverage",
-    "test:connection": "jest --coverage --detectOpenHandles",
-    "test:watch": "jest --watch",
-    "prepublish": "npm run build"
+    "test:watch": "jest --watch"
   },
-  "author": "Siro Diaz <sirodiaz93@gmail.com>",
-  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "29.4.0",
+    "@types/node": "18.14.2",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
+    "husky": "8.0.3",
+    "jest": "29.4.3",
+    "lint-staged": "13.1.2",
+    "prettier": "2.8.4",
+    "rimraf": "4.1.3",
+    "ts-jest": "29.0.5",
+    "typescript": "4.9.5"
+  },
   "dependencies": {
-    "es6-template-strings": "^2.0.1",
-    "es7-object-polyfill": "^1.0.1",
-    "mysql2": "^1.6.5",
-    "sqlstring": "^2.3.1",
-    "tslib": "~1.10.0",
-    "yallist": "^4.0.0"
+    "es6-template-strings": "2.0.1",
+    "es7-object-polyfill": "1.0.1",
+    "sqlstring": "2.3.3",
+    "yallist": "4.0.0"
   }
 }

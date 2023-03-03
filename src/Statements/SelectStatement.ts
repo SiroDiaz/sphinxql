@@ -1,11 +1,10 @@
-require ('es7-object-polyfill');
+require('es7-object-polyfill');
 import FromExprStatement from './statement_expressions/FromExprStatement';
 import HavingExprStatement from './statement_expressions/HavingExprStatement';
 import LimitExprStatement from './statement_expressions/LimitExprStatement';
 import OrderByExprStatement from './statement_expressions/OrderByExprStatement';
 import SelectExprStatement from './statement_expressions/SelectExprStatement';
 import MatchExprStatement from './statement_expressions/MatchStatement';
-import ClientInterface from '../ClientInterface';
 import GroupByExprStatement from './statement_expressions/GroupByExprStatement';
 import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
@@ -39,12 +38,12 @@ export default class SelectStatement extends BaseStatement {
   protected optionExprs: OptionExprStatement[] = [];
   protected facetExprs: FacetStatement[] = [];
 
-  public constructor(connection: ClientInterface, ...fields: string[]) {
-    super(connection);
+  public constructor(...fields: string[]) {
+    super();
     this.select = new SelectExprStatement(...fields);
   }
 
-  public from(...indexes: any[]) : SelectStatement {
+  public from(...indexes: any[]): SelectStatement {
     this.fromIndexes = new FromExprStatement(...indexes);
 
     return this;
@@ -56,14 +55,22 @@ export default class SelectStatement extends BaseStatement {
    * @param operator
    * @param value
    */
-  public where(columnExpr: string | Expression, operator: string, value?: any): SelectStatement {
+  public where(
+    columnExpr: string | Expression,
+    operator: string,
+    value?: any,
+  ): SelectStatement {
     if (value === undefined) {
       value = operator;
       operator = '=';
     }
     let condition: WhereStatement = null;
     if (columnExpr instanceof Expression) {
-      condition = new WhereStatement(columnExpr.getExpression(), operator, value);
+      condition = new WhereStatement(
+        columnExpr.getExpression(),
+        operator,
+        value,
+      );
     } else {
       condition = new WhereStatement(columnExpr, operator, value);
     }
@@ -99,7 +106,10 @@ export default class SelectStatement extends BaseStatement {
   public between(column: string | Expression, value1: any, value2: any) {
     let condition: WhereStatement = null;
     if (column instanceof Expression) {
-      condition = new WhereStatement(column.getExpression(), 'BETWEEN', [value1, value2]);
+      condition = new WhereStatement(column.getExpression(), 'BETWEEN', [
+        value1,
+        value2,
+      ]);
     } else {
       condition = new WhereStatement(column, 'BETWEEN', [value1, value2]);
     }
@@ -116,8 +126,16 @@ export default class SelectStatement extends BaseStatement {
    * to prevent security issues, else the value will contain syntax FT operators
    * to make possible use proximity, negation, exact phrase, and so forth.
    */
-  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.match(fields.length ? fields : undefined, value, escapeValue);
+  public match(
+    fields: string[] | string,
+    value: string,
+    escapeValue: boolean = true,
+  ) {
+    this.matchStatement.match(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
@@ -127,8 +145,16 @@ export default class SelectStatement extends BaseStatement {
    * It MUST be used after call "match" method because "orMatch" preppends
    * the OR operator.
    */
-  public orMatch(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.orMatch(fields.length ? fields : undefined, value, escapeValue);
+  public orMatch(
+    fields: string[] | string,
+    value: string,
+    escapeValue: boolean = true,
+  ) {
+    this.matchStatement.orMatch(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
@@ -164,7 +190,10 @@ export default class SelectStatement extends BaseStatement {
    */
   public orderBy(fields: object) {
     for (const [field, order] of Object.entries(fields)) {
-      this.orderByFields = [...this.orderByFields, new OrderByExprStatement(field, order)];
+      this.orderByFields = [
+        ...this.orderByFields,
+        new OrderByExprStatement(field, order),
+      ];
     }
 
     return this;
@@ -206,26 +235,30 @@ export default class SelectStatement extends BaseStatement {
    * or a Expression instance object.
    */
   public option(option: string, value: any) {
-    this.optionExprs = [...this.optionExprs, new OptionExprStatement(option, value)];
+    this.optionExprs = [
+      ...this.optionExprs,
+      new OptionExprStatement(option, value),
+    ];
 
     return this;
   }
 
   public facet(cb) {
     let values = [];
-    values = [...this.facetExprs, cb.apply(this, [new FacetStatement(this.connection)])];
+    values = [...this.facetExprs, cb.apply(this, [new FacetStatement()])];
     this.facetExprs = values;
 
     return this;
   }
 
-  public generate() : string {
+  public generate(): string {
     let statement = 'SELECT ';
     statement += this.select.build();
     statement += ' FROM ';
     statement += this.fromIndexes.build();
 
-    const hasMatchStatement: boolean = this.matchStatement.getParts().length > 0;
+    const hasMatchStatement: boolean =
+      this.matchStatement.getParts().length > 0;
     const hasWhereStatements: boolean = this.whereConditions.length > 0;
 
     if (hasWhereStatements || hasMatchStatement) {
@@ -239,14 +272,18 @@ export default class SelectStatement extends BaseStatement {
       }
 
       let stringStatements: string[];
-      stringStatements = this.whereConditions.map((condition: StatementBuilderBase) => condition.build());
+      stringStatements = this.whereConditions.map(
+        (condition: StatementBuilderBase) => condition.build(),
+      );
       statement += stringStatements.join(' AND ');
     }
 
     if (this.groupByExpr.length) {
       statement += ' GROUP BY ';
       let stringStatements: string[];
-      stringStatements = this.groupByExpr.map((group: GroupByExprStatement) => group.build());
+      stringStatements = this.groupByExpr.map((group: GroupByExprStatement) =>
+        group.build(),
+      );
       statement += stringStatements.join(', ');
     }
 
@@ -257,7 +294,9 @@ export default class SelectStatement extends BaseStatement {
     if (this.orderByFields.length) {
       statement += ' ORDER BY ';
       let stringStatements: string[];
-      stringStatements = this.orderByFields.map((field: StatementBuilderBase) => field.build());
+      stringStatements = this.orderByFields.map((field: StatementBuilderBase) =>
+        field.build(),
+      );
       statement += stringStatements.join(', ');
     }
 
@@ -266,14 +305,18 @@ export default class SelectStatement extends BaseStatement {
     }
 
     if (this.optionExprs.length) {
-      statement += ` OPTION ${this.optionExprs.map((option) => option.build()).join(',')}`;
+      statement += ` OPTION ${this.optionExprs
+        .map((option) => option.build())
+        .join(',')}`;
     }
 
     if (this.facetExprs.length) {
       let facetStatement: string = '';
-      facetStatement = this.facetExprs.map((facet) => {
-        return ` FACET ${facet.build()}`;
-      }).join('');
+      facetStatement = this.facetExprs
+        .map((facet) => {
+          return ` FACET ${facet.build()}`;
+        })
+        .join('');
       statement += facetStatement;
     }
 

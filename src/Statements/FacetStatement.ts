@@ -1,5 +1,4 @@
 import StatementBuilderBase from './StatementBuilderBase';
-import ClientInterface from '../ClientInterface';
 import Expression from './Expression';
 import LimitExprStatement from './statement_expressions/LimitExprStatement';
 import OrderByExprStatement from './statement_expressions/OrderByExprStatement';
@@ -13,8 +12,6 @@ export default class FacetStatement implements StatementBuilderBase {
   protected orderByExpression: OrderByExprStatement;
   protected limitExpression: LimitExprStatement;
 
-  constructor(protected connection: ClientInterface) {}
-
   public field(column: string | Expression): FacetStatement {
     if (column instanceof Expression) {
       this.fieldColumns = [...this.fieldColumns, column.getExpression()];
@@ -25,42 +22,46 @@ export default class FacetStatement implements StatementBuilderBase {
     return this;
   }
 
-  public fields(columns: (string|Expression)[]): FacetStatement {
+  public fields(columns: (string | Expression)[]): FacetStatement {
     const results = this.getExpressions(columns);
     this.fieldColumns = [...this.fieldColumns, ...results];
 
     return this;
   }
 
-  protected getExpressions(exprList: (string|Expression)[]): string[] {
-    let results: string[] = exprList.map((expr) => {
+  protected getExpressions(exprList: (string | Expression)[]): string[] {
+    return exprList.map((expr) => {
       if (expr instanceof Expression) {
         return expr.getExpression();
       }
 
       return expr;
     });
-
-    return results;
   }
 
-  public by(expressions: (string|Expression)[]): FacetStatement {
+  public by(expressions: (string | Expression)[]): FacetStatement {
     const results = this.getExpressions(expressions);
     this.byExpressions = [...this.byExpressions, ...results];
     return this;
   }
 
-  public orderBy(expression: string|Expression, order: string = 'DESC'): FacetStatement {
+  public orderBy(
+    expression: string | Expression,
+    order = 'DESC',
+  ): FacetStatement {
     if (expression instanceof Expression) {
-      this.orderByExpression = new OrderByExprStatement(expression.getExpression(), order);
+      this.orderByExpression = new OrderByExprStatement(
+        expression.getExpression(),
+        order,
+      );
     } else {
       this.orderByExpression = new OrderByExprStatement(expression, order);
     }
-    
+
     return this;
   }
 
-  public offset(offset: number = 0): FacetStatement {
+  public offset(offset = 0): FacetStatement {
     if (this.limitExpression !== undefined) {
       this.limitExpression.setOffset(offset);
     } else {
@@ -70,7 +71,7 @@ export default class FacetStatement implements StatementBuilderBase {
     return this;
   }
 
-  public limit(size: number = 5): FacetStatement {
+  public limit(size = 5): FacetStatement {
     if (this.limitExpression !== undefined) {
       this.limitExpression.setSize(size);
     } else {
@@ -79,16 +80,16 @@ export default class FacetStatement implements StatementBuilderBase {
 
     return this;
   }
-  
+
   build(): string {
-    let statement: string = '';
+    let statement = '';
 
     if (this.fieldColumns.length) {
       statement += this.fieldColumns.join(', ');
     }
 
     if (this.byExpressions.length) {
-      statement += ` BY ${this.byExpressions.join(', ')}`
+      statement += ` BY ${this.byExpressions.join(', ')}`;
     }
 
     if (this.orderByExpression !== undefined) {

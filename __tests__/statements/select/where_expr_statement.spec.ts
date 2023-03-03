@@ -1,7 +1,6 @@
-import WhereStatement from "../../../src/Statements/statement_expressions/WhereStatement";
+import WhereStatement from '../../../src/Statements/statement_expressions/WhereStatement';
 
 describe('Tests for SELECT fields generator', () => {
-
   it('throws an error because empty column is invalid', () => {
     expect(() => {
       new WhereStatement('', '=', 'Siro');
@@ -35,32 +34,38 @@ describe('Tests for SELECT fields generator', () => {
   });
 
   it('checks that an IN condition is well generated', () => {
-    // const qb = connection.getQueryBuilder();
     let generator = new WhereStatement('id', 'IN', [10, 12, 14]);
 
     expect(generator.build()).toBe(`id IN (10, 12, 14)`);
 
-    generator = new WhereStatement('tags', 'IN', ['clothes', 'shoes', 'complements']);
-    expect(generator.build()).toBe(`tags IN ('clothes', 'shoes', 'complements')`);
+    generator = new WhereStatement('tags', 'IN', [
+      'clothes',
+      'shoes',
+      'complements',
+    ]);
+    expect(generator.build()).toBe(
+      `tags IN ('clothes', 'shoes', 'complements')`,
+    );
   });
 
   it('checks that NOT IN condition is well generated', () => {
-    // const qb = connection.getQueryBuilder();
     let generator = new WhereStatement('id', 'NOT IN', [10, 12, 14]);
 
     expect(generator.build()).toBe(`id NOT IN (10, 12, 14)`);
 
-    generator = new WhereStatement('tags', 'NOT IN', ['clothes', 'shoes', 'complements']);
-    expect(generator.build()).toBe(`tags NOT IN ('clothes', 'shoes', 'complements')`);
+    generator = new WhereStatement('tags', 'NOT IN', [
+      'clothes',
+      'shoes',
+      'complements',
+    ]);
+    expect(generator.build()).toBe(
+      `tags NOT IN ('clothes', 'shoes', 'complements')`,
+    );
   });
 
   it('expects a well formed BETWEEN statement', () => {
-    // const qb = connection.getQueryBuilder();
-    let generator = new WhereStatement('year', 'BETWEEN', [2015, 2019]);
+    const generator = new WhereStatement('year', 'BETWEEN', [2015, 2019]);
 
     expect(generator.build()).toBe(`year BETWEEN 2015 AND 2019`);
-
-    // generator = new WhereStatement('tags', 'IN', ['clothes', 'shoes', 'complements']);
-    // expect(generator.build()).toBe(`tags IN ('clothes', 'shoes', 'complements')`);
   });
 });

@@ -1,12 +1,11 @@
-import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
 
 /**
  * FLUSH RTINDEX rtindex
  */
 export default class FlushRTIndexStatement extends BaseStatement {
-  public constructor(connection: ClientInterface, protected readonly index: string) {
-    super(connection);
+  public constructor(protected readonly index: string) {
+    super();
   }
 
   /**

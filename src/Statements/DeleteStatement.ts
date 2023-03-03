@@ -1,5 +1,4 @@
 import MatchExprStatement from './statement_expressions/MatchStatement';
-import ClientInterface from '../ClientInterface';
 import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
 import BaseStatement from './BaseStatement';
@@ -8,13 +7,11 @@ import BaseStatement from './BaseStatement';
  * DELETE FROM index WHERE where_condition
  */
 export default class DeleteStatement extends BaseStatement {
-  protected index: string;
   protected matchStatement: MatchExprStatement = new MatchExprStatement();
   protected whereConditions: WhereStatement[] = [];
-  
-  public constructor(connection: ClientInterface, index: string) {
-    super(connection);
-    this.index = index;
+
+  public constructor(protected index: string) {
+    super();
   }
 
   /**
@@ -23,7 +20,11 @@ export default class DeleteStatement extends BaseStatement {
    * @param operator
    * @param value
    */
-  public where(columnExpr: string, operator: string, value?: any): DeleteStatement {
+  public where(
+    columnExpr: string,
+    operator: string,
+    value?: any,
+  ): DeleteStatement {
     if (value === undefined) {
       value = operator;
       operator = '=';
@@ -64,8 +65,12 @@ export default class DeleteStatement extends BaseStatement {
    * to prevent security issues, else the value will contain syntax FT operators
    * to make possible use proximity, negation, exact phrase, and so forth.
    */
-  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.match(fields.length ? fields : undefined, value, escapeValue);
+  public match(fields: string[] | string, value: string, escapeValue = true) {
+    this.matchStatement.match(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
@@ -75,17 +80,22 @@ export default class DeleteStatement extends BaseStatement {
    * It MUST be used after call "match" method because "orMatch" preppends
    * the OR operator.
    */
-  public orMatch(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.orMatch(fields.length ? fields : undefined, value, escapeValue);
+  public orMatch(fields: string[] | string, value: string, escapeValue = true) {
+    this.matchStatement.orMatch(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
 
-  public generate() : string {
+  public generate(): string {
     let statement = 'DELETE FROM ';
     statement += this.index;
 
-    const hasMatchStatement: boolean = this.matchStatement.getParts().length > 0;
+    const hasMatchStatement: boolean =
+      this.matchStatement.getParts().length > 0;
     const hasWhereStatements: boolean = this.whereConditions.length > 0;
 
     if (hasWhereStatements || hasMatchStatement) {
@@ -98,8 +108,9 @@ export default class DeleteStatement extends BaseStatement {
         }
       }
 
-      let stringStatements: string[];
-      stringStatements = this.whereConditions.map((condition: StatementBuilderBase) => condition.build());
+      const stringStatements = this.whereConditions.map(
+        (condition: StatementBuilderBase) => condition.build(),
+      );
       statement += stringStatements.join(' AND ');
     }
 

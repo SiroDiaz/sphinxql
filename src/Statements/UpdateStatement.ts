@@ -1,6 +1,5 @@
-require ('es7-object-polyfill');
+require('es7-object-polyfill');
 import MatchExprStatement from './statement_expressions/MatchStatement';
-import ClientInterface from '../ClientInterface';
 import WhereStatement from './statement_expressions/WhereStatement';
 import StatementBuilderBase from './StatementBuilderBase';
 import OptionExprStatement from './statement_expressions/OptionExprStatement';
@@ -11,15 +10,14 @@ import BaseStatement from './BaseStatement';
   UPDATE index SET col1 = newval1 [, ...] WHERE where_condition [OPTION opt_name = opt_value [, ...]]
  */
 export default class UpdateStatement extends BaseStatement {
-  protected connection: ClientInterface;
   protected index: string;
   protected setParams: object = {};
   protected matchStatement: MatchExprStatement = new MatchExprStatement();
   protected whereConditions: WhereStatement[] = [];
   protected optionExprs: OptionExprStatement[] = [];
 
-  public constructor(connection: ClientInterface, index: string) {
-    super(connection);
+  public constructor(index: string) {
+    super();
     this.index = index;
   }
 
@@ -35,7 +33,11 @@ export default class UpdateStatement extends BaseStatement {
    * @param operator
    * @param value
    */
-  public where(columnExpr: string, operator: string, value?: any): UpdateStatement {
+  public where(
+    columnExpr: string,
+    operator: string,
+    value?: any,
+  ): UpdateStatement {
     if (value === undefined) {
       value = operator;
       operator = '=';
@@ -76,8 +78,12 @@ export default class UpdateStatement extends BaseStatement {
    * to prevent security issues, else the value will contain syntax FT operators
    * to make possible use proximity, negation, exact phrase, and so forth.
    */
-  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.match(fields.length ? fields : undefined, value, escapeValue);
+  public match(fields: string[] | string, value: string, escapeValue = true) {
+    this.matchStatement.match(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
@@ -87,8 +93,12 @@ export default class UpdateStatement extends BaseStatement {
    * It MUST be used after call "match" method because "orMatch" preppends
    * the OR operator.
    */
-  public orMatch(fields: string[] | string, value: string, escapeValue: boolean = true) {
-    this.matchStatement.orMatch(fields.length ? fields : undefined, value, escapeValue);
+  public orMatch(fields: string[] | string, value: string, escapeValue = true) {
+    this.matchStatement.orMatch(
+      fields.length ? fields : undefined,
+      value,
+      escapeValue,
+    );
 
     return this;
   }
@@ -100,19 +110,23 @@ export default class UpdateStatement extends BaseStatement {
    * or a Expression instance object.
    */
   public option(option: string, value: any) {
-    this.optionExprs = [...this.optionExprs, new OptionExprStatement(option, value)];
+    this.optionExprs = [
+      ...this.optionExprs,
+      new OptionExprStatement(option, value),
+    ];
 
     return this;
   }
 
-  public generate() : string {
+  public generate(): string {
     let statement = 'UPDATE ';
     statement += this.index;
 
     statement += ' SET ';
     statement += this.generateSet();
 
-    const hasMatchStatement: boolean = this.matchStatement.getParts().length > 0;
+    const hasMatchStatement: boolean =
+      this.matchStatement.getParts().length > 0;
     const hasWhereStatements: boolean = this.whereConditions.length > 0;
 
     if (hasWhereStatements || hasMatchStatement) {
@@ -125,21 +139,26 @@ export default class UpdateStatement extends BaseStatement {
         }
       }
 
-      let stringStatements: string[];
-      stringStatements = this.whereConditions.map((condition: StatementBuilderBase) => condition.build());
+      const stringStatements: string[] = this.whereConditions.map(
+        (condition: StatementBuilderBase) => condition.build(),
+      );
       statement += stringStatements.join(' AND ');
     }
 
     if (this.optionExprs.length) {
-      statement += ` OPTION ${this.optionExprs.map((option) => option.build()).join(',')}`;
+      statement += ` OPTION ${this.optionExprs
+        .map((option) => option.build())
+        .join(',')}`;
     }
 
     return statement;
   }
 
   protected generateSet(): string {
-    return Object.entries(this.setParams).map(([key, value, ]) => {
-      return `${key}=${utils.getExpressionCompare(value)}`;
-    }).join(', ');
+    return Object.entries(this.setParams)
+      .map(([key, value]) => {
+        return `${key}=${utils.getExpressionCompare(value)}`;
+      })
+      .join(', ');
   }
 }

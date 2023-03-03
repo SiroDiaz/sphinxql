@@ -1,5 +1,4 @@
 import { escape } from 'sqlstring';
-import ClientInterface from '../ClientInterface';
 import BaseStatement from './BaseStatement';
 const template = require('es6-template-strings');
 
@@ -12,21 +11,21 @@ export default class InsertStatement extends BaseStatement {
   protected values: any;
   protected type: string;
 
-  constructor(connection: ClientInterface, index: string, values: any, insertType: string = 'INSERT') {
-    super(connection);
+  constructor(index: string, values: any, insertType = 'INSERT') {
+    super();
     if (!index.length) {
       throw Error('real-time index must be valid but empty name provided');
     }
-    if (!(values instanceof Array) && (typeof values !== 'object')) {
+    if (!(values instanceof Array) && typeof values !== 'object') {
       throw Error(`Provide an array or an object (key-value pair) values`);
     }
-    if ((values instanceof Array) && !values.length) {
+    if (values instanceof Array && !values.length) {
       throw Error(`No document to insert`);
     }
-    this.connection = connection;
+
     this.index = index;
     this.values = values;
-    this.type = insertType
+    this.type = insertType;
   }
 
   /**
@@ -38,7 +37,9 @@ export default class InsertStatement extends BaseStatement {
    * {id: 1, title: 'title...'}
    */
   protected renderValues(values: object, columns: string[]): string {
-    let tmpl: string = columns.map(column => '${'+ column +'}').join(', ');
+    const tmpl: string = columns
+      .map((column) => '${' + column + '}')
+      .join(', ');
     for (let i = 0; i < columns.length; i++) {
       if (typeof values[columns[i]] === 'string') {
         values[columns[i]] = escape(values[columns[i]]);
@@ -49,12 +50,12 @@ export default class InsertStatement extends BaseStatement {
     return `(${compiledTemplate})`;
   }
 
-  public generate() : string {
+  public generate(): string {
     let valuesFields: string[] = [];
     // array of documents
     if (this.values instanceof Array) {
       const columns: string[] = Object.keys(this.values[0]);
-      let expression: string = `${this.type} INTO ${this.index} `;
+      let expression = `${this.type} INTO ${this.index} `;
       expression += `${this.renderColumnList(columns)} VALUES `;
 
       valuesFields = this.values.map((values) => {
@@ -67,8 +68,10 @@ export default class InsertStatement extends BaseStatement {
     // case of key-value object
     const columns: string[] = Object.keys(this.values);
 
-    return `${this.type} INTO ${this.index} ${this.renderColumnList(columns)} ` +
-      `VALUES ${this.renderValues(this.values, columns)}`;
+    return (
+      `${this.type} INTO ${this.index} ${this.renderColumnList(columns)} ` +
+      `VALUES ${this.renderValues(this.values, columns)}`
+    );
   }
 
   /**
@@ -77,7 +80,7 @@ export default class InsertStatement extends BaseStatement {
    *
    * Example output: (id, title, content)
    */
-  protected renderColumnList(columns: string[]) : string {
-    return `(${ columns.join(', ') })`;
+  protected renderColumnList(columns: string[]): string {
+    return `(${columns.join(', ')})`;
   }
 }

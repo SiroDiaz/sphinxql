@@ -1,4 +1,3 @@
-import ClientInterface from './ClientInterface';
 import FlushRTIndexStatement from './Statements/FlushRTIndexStatement';
 import InsertStatement from './Statements/InsertReplaceStatement';
 import SelectStatement from './Statements/SelectStatement';
@@ -11,67 +10,54 @@ import ReloadIndexStatement from './Statements/ReloadIndexStatement';
 import OptimizeIndexStatement from './Statements/OptimizeIndexStatement';
 
 export default class QueryBuilder {
-  protected connection: ClientInterface;
-
-  constructor(connection: ClientInterface) {
-    this.connection = connection;
-  }
-
   /**
    * Run raw queries and passes an array (optional) of parameters.
    * Returns a promise with the result in mysql2 connector return the format
    * @param q
    * @param values
    */
-  public query(q: string, values?: Array<any>) : Promise<any> {
-    if (values !== undefined) {
-      return this.connection.execute(q, values);
-    }
-
-    return this.connection.query(q);
-  }
 
   public select(...fields: string[]): SelectStatement {
-    return new SelectStatement(this.connection, ...fields);
+    return new SelectStatement(...fields);
   }
 
   public insert(index: string, values: any): InsertStatement {
-    return new InsertStatement(this.connection, index, values);
+    return new InsertStatement(index, values);
   }
 
   public replace(index: string, values: any): InsertStatement {
-    return new InsertStatement(this.connection, index, values, 'REPLACE');
+    return new InsertStatement(index, values, 'REPLACE');
   }
 
   public update(index: string): UpdateStatement {
-    return new UpdateStatement(this.connection, index);
+    return new UpdateStatement(index);
   }
 
   public delete(index: string): DeleteStatement {
-    return new DeleteStatement(this.connection, index);
+    return new DeleteStatement(index);
   }
 
   public optimizeIndex(index: string): OptimizeIndexStatement {
-    return new OptimizeIndexStatement(this.connection, index);
+    return new OptimizeIndexStatement(index);
   }
 
   public attachIndex(diskIndex: string): AttachIndexStatement {
-    return new AttachIndexStatement(this.connection, diskIndex);
+    return new AttachIndexStatement(diskIndex);
   }
 
   public flushRTIndex(index: string): FlushRTIndexStatement {
-    return new FlushRTIndexStatement(this.connection, index);
+    return new FlushRTIndexStatement(index);
   }
 
   public truncate(rtIndex: string): TruncateStatement {
-    return new TruncateStatement(this.connection, rtIndex);
+    return new TruncateStatement(rtIndex);
   }
 
   public reloadIndex(index: string): ReloadIndexStatement {
-    return new ReloadIndexStatement(this.connection, index);
+    return new ReloadIndexStatement(index);
   }
 
   get transaction(): TransactionStatement {
-    return new TransactionStatement(this.connection);
+    return new TransactionStatement();
   }
 }
