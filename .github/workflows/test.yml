@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: check code format
         run: npm run format
       #- name: Lint code
