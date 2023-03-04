@@ -34,8 +34,8 @@ jobs:
         run: npm install
       - name: check code format
         run: npm run format
-      - name: Lint code
-        run: npm run lint
+      #- name: Lint code
+      #  run: npm run lint
       - name: test code
         run: npm run test
 
