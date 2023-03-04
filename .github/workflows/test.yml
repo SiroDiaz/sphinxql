@@ -9,10 +9,7 @@ on:
       - next
   pull_request:
     branches:
-      - main
-      - master
-      - develop
-      - next
+      - '*'
 
 permissions:
   contents: read
