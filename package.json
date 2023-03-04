@@ -27,10 +27,12 @@
     "node": ">= 12.0.0"
   },
   "scripts": {
-    "clean": "rimraf coverage build tmp",
+    "clean": "rimraf coverage build dist tmp",
     "build": "tsc -p tsconfig.release.json",
-    "build:watch": "tsc -w -p tsconfig.release.json",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src/**",
+    "format": "prettier --check src/**/*.ts",
+    "format:fix": "prettier --write src/**/*.ts",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },

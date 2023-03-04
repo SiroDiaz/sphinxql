@@ -14,7 +14,7 @@ export default class OptionExprStatement implements StatementBuilderBase {
   }
 
   public build(): string {
-    let expression: string = `${this.option}=`;
+    let expression = `${this.option}=`;
 
     if (this.value instanceof Expression) {
       expression += this.value.getExpression();

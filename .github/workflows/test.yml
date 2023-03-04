@@ -7,10 +7,13 @@ on:
       - master
       - develop
   pull_request:
+    branches:
+      - main
+      - master
+      - develop
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   test:
@@ -25,5 +28,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - run: npm test
+      - name: Install dependencies
+        run: npm install
+      - name: check code format
+        run: npm run format
+      - name: Lint code
+        run: npm run lint
+      - name: test code
+        run: npm run test
 

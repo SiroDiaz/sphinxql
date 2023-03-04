@@ -126,11 +126,7 @@ export default class SelectStatement extends BaseStatement {
    * to prevent security issues, else the value will contain syntax FT operators
    * to make possible use proximity, negation, exact phrase, and so forth.
    */
-  public match(
-    fields: string[] | string,
-    value: string,
-    escapeValue: boolean = true,
-  ) {
+  public match(fields: string[] | string, value: string, escapeValue = true) {
     this.matchStatement.match(
       fields.length ? fields : undefined,
       value,
@@ -145,11 +141,7 @@ export default class SelectStatement extends BaseStatement {
    * It MUST be used after call "match" method because "orMatch" preppends
    * the OR operator.
    */
-  public orMatch(
-    fields: string[] | string,
-    value: string,
-    escapeValue: boolean = true,
-  ) {
+  public orMatch(fields: string[] | string, value: string, escapeValue = true) {
     this.matchStatement.orMatch(
       fields.length ? fields : undefined,
       value,
@@ -203,7 +195,7 @@ export default class SelectStatement extends BaseStatement {
    * Creates a LIMIT expression if doesn't exist with a default size.
    * If "limit" method has been called before then updates the offset.
    */
-  public offset(offset: number = 0) {
+  public offset(offset = 0) {
     if (this.limitExpr !== undefined) {
       this.limitExpr.setOffset(offset);
     } else {
@@ -218,7 +210,7 @@ export default class SelectStatement extends BaseStatement {
    * size (length or number of results).
    * If "offset" method has been called before then updates the size.
    */
-  public limit(size: number = 5) {
+  public limit(size = 5) {
     if (this.limitExpr !== undefined) {
       this.limitExpr.setSize(size);
     } else {
@@ -311,7 +303,7 @@ export default class SelectStatement extends BaseStatement {
     }
 
     if (this.facetExprs.length) {
-      let facetStatement: string = '';
+      let facetStatement = '';
       facetStatement = this.facetExprs
         .map((facet) => {
           return ` FACET ${facet.build()}`;

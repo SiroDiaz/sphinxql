@@ -8,7 +8,7 @@ export default class WhereCondition implements StatementBuilderBase {
   protected whereConditions: WhereStatement[] = [];
 
   build(): string {
-    let statement: string = '';
+    let statement = '';
     const hasMatchStatement: boolean = this.matchStatement.getParts().length > 0;
     const hasWhereStatements: boolean = this.whereConditions.length > 0;
 

@@ -4,13 +4,13 @@ export default class LimitExprStatement implements StatementBuilderBase {
   private size: number;
   private offset: number;
 
-  constructor(offset: number = 0, size: number = 5) {
+  constructor(offset = 0, size = 5) {
     this.setOffset(offset);
     this.setSize(size);
   }
 
   public build(): string {
-    let expression: string = '';
+    let expression = '';
     if (this.offset > 0) {
       expression += `${this.offset}, `;
     }

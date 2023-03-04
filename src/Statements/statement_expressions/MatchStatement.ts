@@ -42,7 +42,7 @@ export default class MatchStatement implements StatementBuilderBase {
     return newEscapedValue;
   }
 
-  public match(fields: string[] | string, value: string, escapeValue: boolean = true) {
+  public match(fields: string[] | string, value: string, escapeValue = true) {
     const part = {
       logicalLeftRelation: ' ',
       fields: fields,
@@ -53,7 +53,7 @@ export default class MatchStatement implements StatementBuilderBase {
     this.parts = [...this.parts, part];
   }
 
-  public orMatch(fields: string[] | string | undefined, value: string, escapeValue: boolean = true) {
+  public orMatch(fields: string[] | string | undefined, value: string, escapeValue = true) {
     if (!this.parts.length) {
       throw Error('OR statement can\'t be used at the beginning of a MATCH expression');
     }
@@ -69,7 +69,7 @@ export default class MatchStatement implements StatementBuilderBase {
   }
 
   public build(): string {
-    let expression: string = '\'';
+    let expression = '\'';
 
     for (let i = 0, length = this.parts.length; i < length; i++) {
       // @ts-ignore
@@ -91,7 +91,7 @@ export default class MatchStatement implements StatementBuilderBase {
    * Generates fields for the full-text query condition.
    */
   protected buildFields(fields): string {
-    let expression: string = '';
+    let expression = '';
 
     if (fields !== undefined) {
       if (typeof fields === 'string') {

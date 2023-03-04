@@ -17,7 +17,7 @@ export default class FilterCondition implements StatementBuilderBase {
   }
 
   public build(): string {
-    let expression : string = this.columnExpr;
+    let expression: string = this.columnExpr;
 
     if (this.operator.includes('IN')) {
       expression += ` ${this.buildIn()}`;
@@ -45,11 +45,9 @@ export default class FilterCondition implements StatementBuilderBase {
   }
 
   protected buildIn(): string {
-    let expression : string = '';
+    let expression = '';
     expression += `${this.operator} `;
-    const values: string = '?'.repeat(this.value.length)
-      .split('')
-      .join(', ');
+    const values: string = '?'.repeat(this.value.length).split('').join(', ');
     expression += `(${format(values, this.value)})`;
 
     return expression;

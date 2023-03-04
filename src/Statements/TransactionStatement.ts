@@ -1,4 +1,3 @@
-
 export default class TransactionStatement {
   public begin(): string {
     return 'BEGIN';
